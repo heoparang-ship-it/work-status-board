@@ -1,4 +1,5 @@
 const SHEET_NAME = "근태기록";
+const BOARD_STATE_KEY = "officeBoardState";
 const HEADERS = [
   "날짜",
   "사용자",
@@ -13,6 +14,11 @@ function doPost(e) {
 
   try {
     const payload = parsePayload_(e);
+    if (payload.type === "board_state") {
+      saveBoardState_(payload.boardState);
+      return json_({ ok: true, saved: true });
+    }
+
     const records = Array.isArray(payload.records)
       ? payload.records
       : [payload.record || payload];
@@ -35,7 +41,10 @@ function doPost(e) {
 
 function doGet(e) {
   const callback = e && e.parameter && e.parameter.callback;
-  const result = { ok: true, sheet: SHEET_NAME, time: new Date().toISOString() };
+  const action = e && e.parameter && e.parameter.action;
+  const result = action === "state"
+    ? { ok: true, boardState: getBoardState_(), time: new Date().toISOString() }
+    : { ok: true, sheet: SHEET_NAME, time: new Date().toISOString() };
 
   if (callback) {
     return ContentService
@@ -50,6 +59,21 @@ function parsePayload_(e) {
   const raw = e && e.postData && e.postData.contents;
   if (!raw) return {};
   return JSON.parse(raw);
+}
+
+function saveBoardState_(value) {
+  if (!value || typeof value !== "object") return;
+  PropertiesService.getScriptProperties().setProperty(BOARD_STATE_KEY, JSON.stringify(value));
+}
+
+function getBoardState_() {
+  const raw = PropertiesService.getScriptProperties().getProperty(BOARD_STATE_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    return null;
+  }
 }
 
 function getAttendanceSheet_() {
