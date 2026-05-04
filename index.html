@@ -726,6 +726,16 @@
       box-shadow: 0 0 0 4px rgba(23, 143, 138, .2), 4px 4px 0 rgba(38, 49, 61, .24);
     }
 
+    .character.ghost {
+      pointer-events: none;
+      opacity: .88;
+      z-index: 9;
+    }
+
+    .character.ghost .body {
+      filter: saturate(.82);
+    }
+
     .body {
       position: absolute;
       left: 5px;
@@ -1378,6 +1388,7 @@
             <div class="entrance" aria-hidden="true">
               <span class="entrance-label">입구</span>
             </div>
+            <div class="character-layer" id="characterLayer" aria-label="직원 위치"></div>
 
             <button class="character" id="myCharacter" type="button" aria-label="내 캐릭터 명령">
               <span class="status-badge" id="statusBadge">출근</span>
@@ -1486,6 +1497,9 @@
 
   <script>
     const STORAGE_KEY = "office-multiverse-state-v1";
+    const MASTER_USERNAME = "허파랑";
+    const MASTER_PASSWORD = "9999";
+    const REMOTE_SYNC_INTERVAL = 5000;
     const KST_TIME_ZONE = "Asia/Seoul";
     const KOREAN_HOLIDAYS = {
       "2026-01-01": "신정",
@@ -1553,6 +1567,7 @@
       todayLine: document.getElementById("todayLine"),
       logList: document.getElementById("logList"),
       myCharacter: document.getElementById("myCharacter"),
+      characterLayer: document.getElementById("characterLayer"),
       statusBadge: document.getElementById("statusBadge"),
       nameBadge: document.getElementById("nameBadge"),
       commandMenu: document.getElementById("commandMenu"),
@@ -1606,6 +1621,9 @@
     let draggedDesk = null;
     let selectedDeskId = null;
     let calendarFilterUserId = "all";
+    let remoteSyncTimer = null;
+    let remoteSaveTimer = null;
+    let isApplyingRemoteState = false;
 
     applySheetEndpointFromUrl();
 
@@ -1704,6 +1722,122 @@
 
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      scheduleRemoteStateSave();
+    }
+
+    function publicStateSnapshot() {
+      return {
+        layoutVersion: state.layoutVersion,
+        users: state.users,
+        logs: state.logs,
+        attendance: state.attendance,
+        deskLayout: state.deskLayout,
+        noticeText: state.noticeText,
+        sheetSync: sanitizeSheetSync(state.sheetSync),
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function applyPublicStateSnapshot(snapshot) {
+      if (!snapshot || typeof snapshot !== "object") return false;
+      const localSession = state.session;
+      const localEndpoint = sheetEndpoint();
+      isApplyingRemoteState = true;
+      state = {
+        layoutVersion: Number(snapshot.layoutVersion) || initialState.layoutVersion,
+        users: sanitizeUsers(snapshot.users),
+        logs: Array.isArray(snapshot.logs) ? snapshot.logs : [],
+        attendance: Array.isArray(snapshot.attendance) ? snapshot.attendance : [],
+        deskLayout: sanitizeDeskLayout(snapshot.deskLayout),
+        noticeText: typeof snapshot.noticeText === "string" && snapshot.noticeText.trim()
+          ? snapshot.noticeText.trim()
+          : "오늘의 업무 현황을 확인하세요.",
+        sheetSync: sanitizeSheetSync(snapshot.sheetSync),
+        session: localSession
+      };
+      if (localEndpoint && !state.sheetSync.endpoint) {
+        state.sheetSync.endpoint = localEndpoint;
+      }
+      if (state.session && !state.users.some((user) => user.id === state.session.userId)) {
+        state.session = null;
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      isApplyingRemoteState = false;
+      return true;
+    }
+
+    function scheduleRemoteStateSave() {
+      if (isApplyingRemoteState || !sheetEndpoint()) return;
+      clearTimeout(remoteSaveTimer);
+      remoteSaveTimer = setTimeout(sendRemoteStateSnapshot, 450);
+    }
+
+    async function sendRemoteStateSnapshot() {
+      const endpoint = sheetEndpoint();
+      if (!endpoint) return false;
+      try {
+        await fetch(endpoint, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify({
+            type: "board_state",
+            boardState: publicStateSnapshot()
+          })
+        });
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function fetchJsonp(url) {
+      return new Promise((resolve, reject) => {
+        const callbackName = `officeBoardCallback_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+        const script = document.createElement("script");
+        const cleanup = () => {
+          delete window[callbackName];
+          script.remove();
+        };
+        window[callbackName] = (value) => {
+          cleanup();
+          resolve(value);
+        };
+        script.onerror = () => {
+          cleanup();
+          reject(new Error("JSONP load failed"));
+        };
+        const separator = url.includes("?") ? "&" : "?";
+        script.src = `${url}${separator}action=state&callback=${callbackName}&_=${Date.now()}`;
+        document.head.appendChild(script);
+      });
+    }
+
+    async function fetchRemoteState(options = {}) {
+      const endpoint = sheetEndpoint();
+      if (!endpoint) return false;
+      try {
+        const payload = await fetchJsonp(endpoint);
+        if (payload?.boardState && applyPublicStateSnapshot(payload.boardState)) {
+          await ensureMasterAccount({ save: false });
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          if (options.render && !els.dashboard.classList.contains("hidden")) renderAll();
+          return true;
+        }
+      } catch {
+        return false;
+      }
+      return false;
+    }
+
+    function startRemoteStatePolling() {
+      clearInterval(remoteSyncTimer);
+      if (!sheetEndpoint()) return;
+      remoteSyncTimer = setInterval(() => {
+        fetchRemoteState({ render: true });
+      }, REMOTE_SYNC_INTERVAL);
     }
 
     function sheetEndpoint() {
@@ -1764,6 +1898,8 @@
         endpoint
       };
       saveState();
+      startRemoteStatePolling();
+      sendRemoteStateSnapshot();
       renderSheetControls();
       setSheetStatus(endpoint ? "시트 연동 URL을 저장했습니다. 직원 공유 링크를 전달하세요." : "시트 연동 URL을 비웠습니다.");
     }
@@ -1915,6 +2051,44 @@
         .join("");
     }
 
+    async function ensureMasterAccount(options = {}) {
+      const masterHash = await passwordHash(MASTER_PASSWORD);
+      let master = state.users.find((user) => user.role === "admin")
+        || state.users.find((user) => user.username === MASTER_USERNAME)
+        || state.users[0];
+
+      if (!master) {
+        master = {
+          id: uid("user"),
+          username: MASTER_USERNAME,
+          passwordHash: masterHash,
+          characterName: MASTER_USERNAME,
+          role: "admin",
+          status: "퇴근",
+          position: POINTS.entry,
+          createdAt: new Date().toISOString()
+        };
+        state.users.push(master);
+      }
+
+      master.username = MASTER_USERNAME;
+      master.characterName = MASTER_USERNAME;
+      master.passwordHash = masterHash;
+      master.role = "admin";
+      master.status = master.status || "퇴근";
+      master.position = master.position || POINTS.entry;
+
+      state.users.forEach((user) => {
+        if (user.id !== master.id && user.username === MASTER_USERNAME) {
+          user.username = `${user.username}-${user.id.slice(-4)}`;
+          user.characterName = user.username;
+        }
+      });
+
+      if (options.save !== false) saveState();
+      return master;
+    }
+
     function setAuthMode(nextMode) {
       if (nextMode === "register" && state.users.length > 0) {
         authMode = "login";
@@ -2023,6 +2197,10 @@
         return;
       }
 
+      if (sheetEndpoint()) {
+        await fetchRemoteState();
+      }
+      await ensureMasterAccount({ save: false });
       const hash = await passwordHash(password);
       const existing = state.users.find((user) => user.username === username);
 
@@ -2153,6 +2331,7 @@
     function renderCharacter() {
       const user = currentUser();
       if (!user) return;
+      renderOtherCharacters(user.id);
       const point = clampPoint(user.position || POINTS.desk);
       els.myCharacter.style.left = `${point.x}%`;
       els.myCharacter.style.top = `${point.y}%`;
@@ -2160,6 +2339,37 @@
       els.nameBadge.textContent = user.username || user.characterName || "사용자";
       els.myCharacter.setAttribute("aria-label", `${user.username || "내"} 캐릭터 명령`);
       els.myCharacter.style.setProperty("--shirt", statusColor(user.status));
+    }
+
+    function renderOtherCharacters(currentUserId) {
+      els.characterLayer.innerHTML = "";
+      state.users
+        .filter((user) => user.id !== currentUserId)
+        .forEach((user) => {
+          const point = clampPoint(user.position || POINTS.entry);
+          const item = document.createElement("div");
+          item.className = "character ghost";
+          item.style.left = `${point.x}%`;
+          item.style.top = `${point.y}%`;
+          item.style.setProperty("--shirt", statusColor(user.status));
+          item.setAttribute("aria-label", `${user.username} 캐릭터`);
+          item.innerHTML = `
+            <span class="status-badge">${user.status || "퇴근"}</span>
+            <span class="head" aria-hidden="true"></span>
+            <span class="body" aria-hidden="true"></span>
+            <span class="name-badge">${escapeHtml(user.username || user.characterName || "사용자")}</span>
+          `;
+          els.characterLayer.appendChild(item);
+        });
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
     }
 
     function clamp(value, min, max) {
@@ -2943,11 +3153,20 @@
       }
     });
 
-    if (state.session && currentUser()) {
-      enterDashboard();
-    } else {
-      showAuth();
+    async function initApp() {
+      if (sheetEndpoint()) {
+        await fetchRemoteState();
+      }
+      await ensureMasterAccount({ save: true });
+      startRemoteStatePolling();
+      if (state.session && currentUser()) {
+        enterDashboard();
+      } else {
+        showAuth();
+      }
     }
+
+    initApp();
   </script>
 </body>
 </html>
