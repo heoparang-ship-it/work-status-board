@@ -1127,6 +1127,10 @@
       grid-template-columns: minmax(140px, 1fr) minmax(140px, 1fr) auto;
     }
 
+    .password-reset-form {
+      grid-template-columns: minmax(160px, 1fr) minmax(160px, 1fr) auto;
+    }
+
     .admin-form .field {
       margin-bottom: 0;
     }
@@ -1471,6 +1475,18 @@
           <button class="primary-btn" type="submit">마스터 계정 변경</button>
         </form>
         <div class="admin-message" id="masterMessage" aria-live="polite"></div>
+        <form class="admin-form password-reset-form" id="passwordResetForm">
+          <div class="field">
+            <label for="resetUserId">직원 선택</label>
+            <select id="resetUserId" name="resetUserId" required></select>
+          </div>
+          <div class="field">
+            <label for="resetPassword">새 패스워드</label>
+            <input id="resetPassword" name="resetPassword" type="text" autocomplete="off" required>
+          </div>
+          <button class="primary-btn" type="submit">직원 비밀번호 변경</button>
+        </form>
+        <div class="admin-message" id="passwordResetMessage" aria-live="polite"></div>
         <section class="sheet-panel" aria-labelledby="sheetTitle">
           <div class="sheet-copy">
             <h3 id="sheetTitle">Google Sheets 근태 저장</h3>
@@ -1587,6 +1603,10 @@
       masterUsername: document.getElementById("masterUsername"),
       masterPassword: document.getElementById("masterPassword"),
       masterMessage: document.getElementById("masterMessage"),
+      passwordResetForm: document.getElementById("passwordResetForm"),
+      resetUserId: document.getElementById("resetUserId"),
+      resetPassword: document.getElementById("resetPassword"),
+      passwordResetMessage: document.getElementById("passwordResetMessage"),
       sheetEndpoint: document.getElementById("sheetEndpoint"),
       saveSheetButton: document.getElementById("saveSheetButton"),
       syncSheetButton: document.getElementById("syncSheetButton"),
@@ -2812,6 +2832,8 @@
       renderSheetControls();
       els.adminMessage.textContent = "";
       els.masterMessage.textContent = "";
+      els.passwordResetMessage.textContent = "";
+      els.resetPassword.value = "";
       const user = currentUser();
       els.masterUsername.value = user?.username || "";
       els.masterPassword.value = "";
@@ -2826,10 +2848,17 @@
 
     function renderAdminUsers() {
       els.adminUserList.innerHTML = "";
+      const selectedResetUserId = els.resetUserId.value;
+      els.resetUserId.innerHTML = "";
       state.users
         .slice()
         .sort((a, b) => a.username.localeCompare(b.username, "ko-KR"))
         .forEach((user) => {
+          const option = document.createElement("option");
+          option.value = user.id;
+          option.textContent = `${user.username} (${user.role === "admin" ? "관리자" : "직원"})`;
+          els.resetUserId.appendChild(option);
+
           const row = document.createElement("div");
           row.className = "admin-user-row";
           row.innerHTML = `
@@ -2841,6 +2870,10 @@
           `;
           els.adminUserList.appendChild(row);
         });
+
+      if (selectedResetUserId && state.users.some((user) => user.id === selectedResetUserId)) {
+        els.resetUserId.value = selectedResetUserId;
+      }
     }
 
     async function createUserFromAdmin(event) {
@@ -2907,6 +2940,25 @@
       els.masterMessage.textContent = "마스터 계정을 변경했습니다.";
       renderAll();
       renderAdminUsers();
+    }
+
+    async function resetUserPasswordFromAdmin(event) {
+      event.preventDefault();
+      if (!isAdmin()) return;
+
+      const user = userById(els.resetUserId.value);
+      const password = els.resetPassword.value;
+
+      if (!user || !password) {
+        els.passwordResetMessage.textContent = "직원과 새 패스워드를 입력하세요.";
+        return;
+      }
+
+      user.passwordHash = await passwordHash(password);
+      els.resetPassword.value = "";
+      saveState();
+      renderAdminUsers();
+      els.passwordResetMessage.textContent = `${user.username} 비밀번호를 변경했습니다.`;
     }
 
     function monthEntries(year, monthIndex) {
@@ -3113,6 +3165,7 @@
     els.closeAdmin.addEventListener("click", closeAdminModal);
     els.adminCreateForm.addEventListener("submit", createUserFromAdmin);
     els.masterAccountForm.addEventListener("submit", updateMasterAccount);
+    els.passwordResetForm.addEventListener("submit", resetUserPasswordFromAdmin);
     els.saveSheetButton.addEventListener("click", saveSheetEndpoint);
     els.syncSheetButton.addEventListener("click", syncAllAttendanceToSheet);
     els.deskLayer.addEventListener("pointerdown", startDeskDrag);
