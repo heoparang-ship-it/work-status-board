@@ -1,17 +1,10 @@
 const SHEET_NAME = "근태기록";
 const HEADERS = [
-  "수신시각",
-  "이벤트",
+  "날짜",
   "사용자",
-  "사용자ID",
-  "근태일",
-  "출근시각",
-  "퇴근시각",
-  "외근횟수",
-  "세션수",
-  "현재상태",
-  "메시지",
-  "원본"
+  "출근 시각",
+  "퇴근 시각",
+  "외근 시각"
 ];
 
 function doPost(e) {
@@ -69,26 +62,47 @@ function getAttendanceSheet_() {
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(HEADERS);
     sheet.setFrozenRows(1);
+  } else {
+    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+    const extraColumnCount = sheet.getLastColumn() - HEADERS.length;
+    if (extraColumnCount > 0) {
+      sheet.deleteColumns(HEADERS.length + 1, extraColumnCount);
+    }
   }
   return sheet;
 }
 
 function toSheetRow_(payload, record) {
-  const receivedAt = new Date();
   return [
-    receivedAt,
-    record.eventType || payload.type || "",
+    formatDate_(record.date),
     record.username || "",
-    record.userId || "",
-    record.date || "",
-    record.clockInAt || "",
-    record.clockOutAt || "",
-    Number(record.outsideCount || 0),
-    Number(record.sessionCount || 0),
-    record.status || "",
-    record.message || "",
-    payload.source || ""
+    formatTime_(record.clockInAt),
+    formatTime_(record.clockOutAt),
+    formatTimeList_(record.outsideAt)
   ];
+}
+
+function formatDate_(value) {
+  if (!value) return "";
+  const date = new Date(`${value}T00:00:00+09:00`);
+  if (Number.isNaN(date.getTime())) return value;
+  return Utilities.formatDate(date, "Asia/Seoul", "yyyy-MM-dd");
+}
+
+function formatTime_(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return Utilities.formatDate(date, "Asia/Seoul", "HH:mm");
+}
+
+function formatTimeList_(value) {
+  if (!value) return "";
+  return String(value)
+    .split(",")
+    .map((item) => formatTime_(item.trim()))
+    .filter(Boolean)
+    .join(", ");
 }
 
 function json_(value) {
