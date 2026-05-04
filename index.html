@@ -1772,16 +1772,11 @@
       normalizeAttendanceEntry(entry);
       const owner = userById(entry?.userId);
       return {
-        eventType,
         username: owner?.username || "",
-        userId: entry?.userId || "",
         date: entry?.date || todayKey(),
         clockInAt: firstClockIn(entry) || "",
         clockOutAt: latestClockOut(entry) || "",
-        outsideCount: entry?.outsideCount || 0,
-        sessionCount: entry?.sessions?.length || 0,
-        status: owner?.status || "",
-        message
+        outsideAt: entry?.outsideTimes?.join(", ") || ""
       };
     }
 
@@ -1982,6 +1977,7 @@
       entry.clockInAt = firstSession?.clockInAt || entry.clockInAt || null;
       entry.clockOutAt = lastSession?.clockOutAt || null;
       entry.outsideCount = Number(entry.outsideCount) || 0;
+      entry.outsideTimes = Array.isArray(entry.outsideTimes) ? entry.outsideTimes.filter(Boolean) : [];
       return entry;
     }
 
@@ -2002,7 +1998,8 @@
           clockInAt: now,
           clockOutAt: null,
           sessions: [{ clockInAt: now, clockOutAt: null }],
-          outsideCount: 0
+          outsideCount: 0,
+          outsideTimes: []
         };
         state.attendance.push(entry);
         addLog(user.id, "clock_in", `${user.username} 출근`);
@@ -2491,8 +2488,12 @@
           if (!latestUser || latestUser.status !== "외근 이동") return;
           latestUser.status = "외근 대기";
           latestUser.position = POINTS.outsideWait;
+          const outsideAt = new Date().toISOString();
           const entry = getTodayAttendance(latestUser.id);
-          if (entry) entry.outsideCount += 1;
+          if (entry) {
+            entry.outsideCount += 1;
+            entry.outsideTimes.push(outsideAt);
+          }
           addLog(latestUser.id, "outside_waiting", `${latestUser.username} 사무실 입구에서 대기`);
           if (entry) syncAttendanceEntry(entry, "outside_waiting", `${latestUser.username} 외근 대기`);
           saveState();
@@ -2521,7 +2522,8 @@
           clockInAt: now,
           clockOutAt: null,
           sessions: [{ clockInAt: now, clockOutAt: null }],
-          outsideCount: 0
+          outsideCount: 0,
+          outsideTimes: []
         };
         state.attendance.push(entry);
         addLog(user.id, "clock_in", `${user.username} 출근`);
