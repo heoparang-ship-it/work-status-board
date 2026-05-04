@@ -777,6 +777,2903 @@
       white-space: nowrap;
     }
 
+    .name-badge {
+      position: absolute;
+      left: 50%;
+      top: 42px;
+      transform: translateX(-50%);
+      min-width: 42px;
+      max-width: 94px;
+      height: 18px;
+      border: 2px solid #26313d;
+      background: #fff8c8;
+      color: #26313d;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      box-shadow: 2px 2px 0 rgba(38, 49, 61, .18);
+    }
+
+    .command-menu {
+      position: absolute;
+      z-index: 30;
+      display: none;
+      min-width: 156px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      padding: 7px;
+    }
+
+    .command-menu.open {
+      display: grid;
+      gap: 6px;
+    }
+
+    .command-menu button {
+      min-height: 36px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: #f6f8f8;
+      color: var(--ink);
+      font-weight: 800;
+      text-align: left;
+      padding: 0 10px;
+    }
+
+    .command-menu button:hover {
+      border-color: #bcc8d2;
+      background: #fff;
+    }
+
+    .side-log {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      background: #ffffff;
+    }
+
+    .side-log.admin-only-hidden {
+      display: none;
+    }
+
+    .side-head {
+      min-height: 74px;
+      display: grid;
+      gap: 3px;
+      align-content: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .side-head strong {
+      font-size: 18px;
+    }
+
+    .side-head span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .log-list {
+      overflow: auto;
+      padding: 10px;
+    }
+
+    .log-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 9px;
+      padding: 11px 8px;
+      border-bottom: 1px solid #edf0f3;
+    }
+
+    .log-time {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .log-text {
+      min-width: 0;
+      color: #26313d;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .empty-log {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 18px 8px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(23, 32, 42, .34);
+      z-index: 90;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      width: min(1120px, calc(100vw - 40px));
+      max-height: min(860px, calc(100vh - 40px));
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-head h2 {
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .modal-title {
+      display: grid;
+      gap: 4px;
+    }
+
+    .calendar-subtitle {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .calendar-grid {
+      overflow: auto;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(86px, 1fr));
+      grid-auto-rows: minmax(92px, auto);
+      gap: 6px;
+      background: #f7f8f5;
+    }
+
+    .weekday,
+    .day-cell {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .weekday {
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .day-cell {
+      padding: 7px;
+      display: grid;
+      align-content: start;
+      gap: 5px;
+      overflow: hidden;
+    }
+
+    .day-cell.muted {
+      opacity: .45;
+    }
+
+    .day-cell.today {
+      border-color: var(--teal);
+      box-shadow: inset 0 0 0 2px rgba(23, 143, 138, .18);
+    }
+
+    .day-cell.weekend .day-num,
+    .day-cell.holiday .day-num {
+      color: #c75643;
+    }
+
+    .day-num {
+      font-size: 13px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .holiday-name {
+      color: #c75643;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1.15;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .day-entry {
+      display: grid;
+      gap: 2px;
+      padding: 5px;
+      border-radius: 5px;
+      background: #edf7f5;
+      color: #1c5555;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .day-entry.compact {
+      background: #eef4fb;
+      color: #244867;
+    }
+
+    .day-entry strong {
+      color: #17202a;
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+
+    .day-more {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .calendar-users {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 12px 16px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .user-card {
+      flex: 0 0 138px;
+      min-height: 62px;
+      display: grid;
+      align-content: center;
+      gap: 3px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f7faf9;
+      color: var(--ink);
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    .user-card strong {
+      font-size: 14px;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .user-card span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .user-card[aria-pressed="true"] {
+      border-color: var(--teal);
+      background: #e7f5f2;
+      box-shadow: inset 0 0 0 2px rgba(23, 143, 138, .16);
+    }
+
+    .admin-body {
+      overflow: auto;
+      padding: 16px;
+      display: grid;
+      gap: 16px;
+      background: #f7f8f5;
+    }
+
+    .admin-form,
+    .sheet-panel {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .admin-form {
+      grid-template-columns: minmax(140px, 1fr) minmax(140px, 1fr) 130px auto;
+      align-items: end;
+    }
+
+    .admin-form .field {
+      margin-bottom: 0;
+    }
+
+    .admin-form select {
+      min-height: 44px;
+      border: 1px solid #cbd4dd;
+      border-radius: 6px;
+      padding: 0 10px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-weight: 800;
+    }
+
+    .admin-message {
+      min-height: 20px;
+      color: var(--teal-dark);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .sheet-panel {
+      gap: 12px;
+    }
+
+    .sheet-copy {
+      display: grid;
+      gap: 4px;
+    }
+
+    .sheet-copy h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .sheet-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .sheet-form {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) auto auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .sheet-form .field,
+    .sheet-share-field {
+      margin-bottom: 0;
+    }
+
+    .sheet-share-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .sheet-share-field input {
+      min-height: 42px;
+      border: 1px solid #cbd4dd;
+      border-radius: 6px;
+      padding: 0 10px;
+      background: #f7faf9;
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .sheet-status {
+      min-height: 18px;
+      color: var(--teal-dark);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .sheet-status.warn {
+      color: #b84f3f;
+    }
+
+    .admin-user-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .admin-user-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .admin-user-row strong {
+      font-size: 14px;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .admin-user-row span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 980px) {
+      .auth-screen {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-preview {
+        min-height: 360px;
+        padding: 22px;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(560px, 1fr) minmax(260px, 36vh);
+      }
+
+      .workspace {
+        border-right: 0;
+      }
+
+      .side-log {
+        border-top: 1px solid var(--line);
+      }
+
+      .top-log {
+        grid-template-columns: 1fr;
+      }
+
+      .top-actions {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .admin-form,
+      .sheet-form {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .auth-panel {
+        padding: 18px;
+      }
+
+      .office-wrap {
+        padding: 10px;
+      }
+
+      .office-stage {
+        min-width: 620px;
+      }
+
+      .today-line {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .today-chip {
+        width: 100%;
+      }
+
+      .calendar-grid {
+        grid-template-columns: repeat(7, minmax(66px, 1fr));
+        grid-auto-rows: minmax(78px, auto);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="auth-screen" id="authScreen">
+      <div class="auth-panel">
+        <form class="auth-box" id="authForm">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true"></div>
+            <h1>업무 현황판</h1>
+          </div>
+
+          <div class="auth-tabs" role="tablist" aria-label="접속 방식">
+            <button type="button" id="loginTab" aria-selected="true">로그인</button>
+            <button type="button" id="registerTab" aria-selected="false">계정 생성</button>
+          </div>
+
+          <div class="field">
+            <label for="username">아이디</label>
+            <input id="username" name="username" autocomplete="username" required>
+          </div>
+
+          <div class="field">
+            <label for="password">패스워드</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+          </div>
+
+          <button class="primary-btn" id="authSubmit" type="submit">접속</button>
+          <div class="msg" id="authMessage" aria-live="polite"></div>
+        </form>
+      </div>
+
+      <div class="auth-preview" aria-hidden="true">
+        <div class="mini-office">
+          <div class="mini-avatar"></div>
+        </div>
+      </div>
+    </section>
+
+    <main class="dashboard hidden" id="dashboard">
+      <section class="workspace">
+        <header class="top-log">
+          <div>
+            <div class="top-log-title">오늘 출근/퇴근</div>
+            <div class="today-line" id="todayLine"></div>
+          </div>
+          <div class="top-actions">
+            <button class="ghost-btn" type="button" id="adminMenuButton">관리자 메뉴</button>
+            <button class="ghost-btn" type="button" id="layoutEditButton" aria-pressed="false">책상 배치</button>
+            <button class="ghost-btn" type="button" id="calendarButton">월간 근태</button>
+            <button class="danger-btn" type="button" id="clockOutButton">퇴근</button>
+            <button class="ghost-btn" type="button" id="logoutButton">로그아웃</button>
+          </div>
+        </header>
+
+        <div class="office-wrap">
+          <div class="office-stage" id="officeStage" aria-label="탑뷰 사무실">
+            <div class="balcony" aria-hidden="true"></div>
+            <button class="calendar" id="calendarObject" type="button" aria-label="월간 근태 열기">
+              <span class="calendar-label">월간<br>근태</span>
+            </button>
+            <button class="notice-board" id="noticeBoard" type="button">
+              <strong>공지사항</strong>
+              <span id="noticeText"></span>
+            </button>
+            <div class="layout-tools" id="layoutTools" aria-label="책상 배치 도구">
+              <button type="button" id="addDeskButton">책상 추가</button>
+              <button type="button" id="deleteDeskButton">책상 삭제</button>
+              <button type="button" id="rotateDeskButton">90도 회전</button>
+              <button type="button" id="flipDeskButton">좌우 반전</button>
+              <button type="button" id="resetDeskButton">초기화</button>
+              <button type="button" id="doneDeskButton">완료</button>
+            </div>
+            <div class="desk-layer" id="deskLayer" aria-label="책상 배치"></div>
+            <div class="plant" aria-hidden="true"></div>
+            <div class="entrance" aria-hidden="true">
+              <span class="entrance-label">입구</span>
+            </div>
+
+            <button class="character" id="myCharacter" type="button" aria-label="내 캐릭터 명령">
+              <span class="status-badge" id="statusBadge">출근</span>
+              <span class="head" aria-hidden="true"></span>
+              <span class="body" aria-hidden="true"></span>
+              <span class="name-badge" id="nameBadge">사용자</span>
+            </button>
+
+            <div class="command-menu" id="commandMenu" role="menu">
+              <button type="button" data-command="clockin" role="menuitem">출근</button>
+              <button type="button" data-command="outside" role="menuitem">외근</button>
+              <button type="button" data-command="clockout" role="menuitem">퇴근</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side-log" id="sideLog">
+        <div class="side-head">
+          <strong>상태 로그</strong>
+          <span id="currentUserLabel"></span>
+        </div>
+        <div class="log-list" id="logList"></div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="calendarModal" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="calendarTitle">
+      <header class="modal-head">
+        <div class="modal-title">
+          <h2 id="calendarTitle">월간 근태</h2>
+          <span class="calendar-subtitle" id="calendarSubtitle"></span>
+        </div>
+        <button class="ghost-btn" type="button" id="closeCalendar">닫기</button>
+      </header>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="calendar-users" id="calendarUsers"></div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="adminModal" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+      <header class="modal-head">
+        <div class="modal-title">
+          <h2 id="adminTitle">관리자 메뉴</h2>
+          <span class="calendar-subtitle">직원 계정을 생성하고 권한을 확인합니다.</span>
+        </div>
+        <button class="ghost-btn" type="button" id="closeAdmin">닫기</button>
+      </header>
+      <div class="admin-body">
+        <form class="admin-form" id="adminCreateForm">
+          <div class="field">
+            <label for="adminNewUsername">아이디</label>
+            <input id="adminNewUsername" name="adminNewUsername" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="adminNewPassword">패스워드</label>
+            <input id="adminNewPassword" name="adminNewPassword" type="password" autocomplete="new-password" required>
+          </div>
+          <div class="field">
+            <label for="adminNewRole">권한</label>
+            <select id="adminNewRole" name="adminNewRole">
+              <option value="employee">직원</option>
+              <option value="admin">관리자</option>
+            </select>
+          </div>
+          <button class="primary-btn" type="submit">계정 생성</button>
+        </form>
+        <div class="admin-message" id="adminMessage" aria-live="polite"></div>
+        <section class="sheet-panel" aria-labelledby="sheetTitle">
+          <div class="sheet-copy">
+            <h3 id="sheetTitle">Google Sheets 근태 저장</h3>
+            <p>Apps Script 웹 앱 URL을 연결하면 출근, 퇴근, 외근 기록을 Google Sheets에 계속 전송합니다.</p>
+          </div>
+          <div class="sheet-form">
+            <div class="field">
+              <label for="sheetEndpoint">Apps Script 웹 앱 URL</label>
+              <input id="sheetEndpoint" name="sheetEndpoint" type="url" placeholder="https://script.google.com/macros/s/.../exec">
+            </div>
+            <button class="ghost-btn" type="button" id="saveSheetButton">연동 저장</button>
+            <button class="ghost-btn" type="button" id="syncSheetButton">기존 근태 전송</button>
+          </div>
+          <div class="sheet-share-field">
+            <label for="sheetShareLink">직원 공유 링크</label>
+            <input id="sheetShareLink" readonly value="연동 URL 저장 후 생성됩니다.">
+          </div>
+          <div class="sheet-status" id="sheetStatus" aria-live="polite"></div>
+        </section>
+        <div class="admin-user-list" id="adminUserList"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "office-multiverse-state-v1";
+    const KST_TIME_ZONE = "Asia/Seoul";
+    const KOREAN_HOLIDAYS = {
+      "2026-01-01": "신정",
+      "2026-02-16": "설 연휴",
+      "2026-02-17": "설날",
+      "2026-02-18": "설 연휴",
+      "2026-03-01": "삼일절",
+      "2026-03-02": "대체공휴일",
+      "2026-05-01": "근로자의 날",
+      "2026-05-05": "어린이날",
+      "2026-05-24": "부처님오신날",
+      "2026-05-25": "대체공휴일",
+      "2026-06-06": "현충일",
+      "2026-08-15": "광복절",
+      "2026-08-17": "대체공휴일",
+      "2026-09-24": "추석 연휴",
+      "2026-09-25": "추석",
+      "2026-09-26": "추석 연휴",
+      "2026-09-28": "대체공휴일",
+      "2026-10-03": "개천절",
+      "2026-10-05": "대체공휴일",
+      "2026-10-09": "한글날",
+      "2026-12-25": "성탄절"
+    };
+    const POINTS = {
+      entry: { x: 94, y: 70 },
+      desk: { x: 45, y: 36 },
+      work: { x: 47, y: 55 },
+      idle: { x: 37, y: 52 },
+      outsideWait: { x: 89, y: 70 }
+    };
+    const CHARACTER_STEP = 3.5;
+    const CHARACTER_BOUNDS = {
+      minX: 4,
+      maxX: 95,
+      minY: 8,
+      maxY: 91
+    };
+
+    const initialState = {
+      layoutVersion: 3,
+      users: [],
+      logs: [],
+      attendance: [],
+      deskLayout: defaultDeskLayout(),
+      noticeText: "오늘의 업무 현황을 확인하세요.",
+      sheetSync: {
+        endpoint: "",
+        lastSyncAt: null
+      },
+      session: null
+    };
+
+    const els = {
+      authScreen: document.getElementById("authScreen"),
+      dashboard: document.getElementById("dashboard"),
+      authForm: document.getElementById("authForm"),
+      username: document.getElementById("username"),
+      password: document.getElementById("password"),
+      loginTab: document.getElementById("loginTab"),
+      registerTab: document.getElementById("registerTab"),
+      authSubmit: document.getElementById("authSubmit"),
+      authMessage: document.getElementById("authMessage"),
+      currentUserLabel: document.getElementById("currentUserLabel"),
+      todayLine: document.getElementById("todayLine"),
+      logList: document.getElementById("logList"),
+      myCharacter: document.getElementById("myCharacter"),
+      statusBadge: document.getElementById("statusBadge"),
+      nameBadge: document.getElementById("nameBadge"),
+      commandMenu: document.getElementById("commandMenu"),
+      sideLog: document.getElementById("sideLog"),
+      officeStage: document.getElementById("officeStage"),
+      deskLayer: document.getElementById("deskLayer"),
+      adminMenuButton: document.getElementById("adminMenuButton"),
+      adminModal: document.getElementById("adminModal"),
+      closeAdmin: document.getElementById("closeAdmin"),
+      adminCreateForm: document.getElementById("adminCreateForm"),
+      adminNewUsername: document.getElementById("adminNewUsername"),
+      adminNewPassword: document.getElementById("adminNewPassword"),
+      adminNewRole: document.getElementById("adminNewRole"),
+      adminMessage: document.getElementById("adminMessage"),
+      adminUserList: document.getElementById("adminUserList"),
+      sheetEndpoint: document.getElementById("sheetEndpoint"),
+      saveSheetButton: document.getElementById("saveSheetButton"),
+      syncSheetButton: document.getElementById("syncSheetButton"),
+      sheetShareLink: document.getElementById("sheetShareLink"),
+      sheetStatus: document.getElementById("sheetStatus"),
+      layoutEditButton: document.getElementById("layoutEditButton"),
+      layoutTools: document.getElementById("layoutTools"),
+      addDeskButton: document.getElementById("addDeskButton"),
+      deleteDeskButton: document.getElementById("deleteDeskButton"),
+      rotateDeskButton: document.getElementById("rotateDeskButton"),
+      flipDeskButton: document.getElementById("flipDeskButton"),
+      resetDeskButton: document.getElementById("resetDeskButton"),
+      doneDeskButton: document.getElementById("doneDeskButton"),
+      noticeBoard: document.getElementById("noticeBoard"),
+      noticeText: document.getElementById("noticeText"),
+      calendarButton: document.getElementById("calendarButton"),
+      calendarObject: document.getElementById("calendarObject"),
+      calendarModal: document.getElementById("calendarModal"),
+      closeCalendar: document.getElementById("closeCalendar"),
+      calendarGrid: document.getElementById("calendarGrid"),
+      calendarUsers: document.getElementById("calendarUsers"),
+      calendarTitle: document.getElementById("calendarTitle"),
+      calendarSubtitle: document.getElementById("calendarSubtitle"),
+      clockOutButton: document.getElementById("clockOutButton"),
+      logoutButton: document.getElementById("logoutButton")
+    };
+
+    let state = loadState();
+    let authMode = "login";
+    let outsideTimer = null;
+    let deskEditMode = false;
+    let draggedDesk = null;
+    let selectedDeskId = null;
+    let calendarFilterUserId = "all";
+
+    applySheetEndpointFromUrl();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(initialState);
+        const parsed = JSON.parse(raw);
+        const next = {
+          layoutVersion: Number(parsed.layoutVersion) || 1,
+          users: sanitizeUsers(parsed.users),
+          logs: Array.isArray(parsed.logs) ? parsed.logs : [],
+          attendance: Array.isArray(parsed.attendance) ? parsed.attendance : [],
+          deskLayout: sanitizeDeskLayout(parsed.deskLayout),
+          noticeText: typeof parsed.noticeText === "string" && parsed.noticeText.trim()
+            ? parsed.noticeText.trim()
+            : "오늘의 업무 현황을 확인하세요.",
+          sheetSync: sanitizeSheetSync(parsed.sheetSync),
+          session: parsed.session || null
+        };
+        if (next.layoutVersion < 2) {
+          next.users = next.users.map((user) => ({
+            ...user,
+            position: migratedPosition(user)
+          }));
+          next.layoutVersion = 2;
+        }
+        if (next.layoutVersion < 3) {
+          next.deskLayout = defaultDeskLayout();
+          next.layoutVersion = 3;
+        }
+        return next;
+      } catch {
+        return structuredClone(initialState);
+      }
+    }
+
+    function sanitizeUsers(value) {
+      const users = Array.isArray(value) ? value : [];
+      const normalized = users.map((user) => ({
+        ...user,
+        role: user.role === "admin" ? "admin" : "employee"
+      }));
+
+      if (normalized.length && !normalized.some((user) => user.role === "admin")) {
+        normalized[0].role = "admin";
+      }
+
+      return normalized;
+    }
+
+    function sanitizeSheetSync(value = {}) {
+      return {
+        endpoint: typeof value.endpoint === "string" ? value.endpoint.trim() : "",
+        lastSyncAt: typeof value.lastSyncAt === "string" ? value.lastSyncAt : null
+      };
+    }
+
+    function isAdmin(user = currentUser()) {
+      return user?.role === "admin";
+    }
+
+    function defaultDeskLayout() {
+      return [
+        { id: "desk-1", x: 24, y: 23, vertical: false, flipped: false },
+        { id: "desk-2", x: 41, y: 23, vertical: false, flipped: false },
+        { id: "desk-3", x: 58, y: 23, vertical: false, flipped: false },
+        { id: "desk-4", x: 32.5, y: 55, vertical: false, flipped: false },
+        { id: "desk-5", x: 49.5, y: 55, vertical: false, flipped: false }
+      ];
+    }
+
+    function sanitizeDeskLayout(value) {
+      const desks = Array.isArray(value) ? value : defaultDeskLayout();
+      return desks
+        .filter((desk) => desk && typeof desk === "object")
+        .map((desk, index) => {
+          const x = Number(desk.x);
+          const y = Number(desk.y);
+          return {
+            id: typeof desk.id === "string" ? desk.id : `desk-${index + 1}`,
+            x: clamp(Number.isFinite(x) ? x : 20, 0, 92),
+            y: clamp(Number.isFinite(y) ? y : 20, 0, 88),
+            vertical: Boolean(desk.vertical),
+            flipped: Boolean(desk.flipped)
+          };
+        });
+    }
+
+    function migratedPosition(user) {
+      if (user.status === "퇴근" || user.status === "외근 이동") return POINTS.entry;
+      if (user.status === "외근 대기") return POINTS.outsideWait;
+      if (user.status === "업무") return POINTS.work;
+      return POINTS.desk;
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function sheetEndpoint() {
+      state.sheetSync = sanitizeSheetSync(state.sheetSync);
+      return state.sheetSync.endpoint;
+    }
+
+    function applySheetEndpointFromUrl() {
+      try {
+        const endpoint = new URLSearchParams(window.location.search).get("sheet") || "";
+        if (!endpoint.trim()) return;
+        state.sheetSync = {
+          ...sanitizeSheetSync(state.sheetSync),
+          endpoint: endpoint.trim()
+        };
+        saveState();
+        window.history.replaceState(null, "", `${window.location.origin}${window.location.pathname}${window.location.hash}`);
+      } catch {
+        // URL parsing is best-effort so older browsers still keep local data usable.
+      }
+    }
+
+    function shareUrlForSheet(endpoint = sheetEndpoint()) {
+      if (!endpoint) return "";
+      const base = `${window.location.origin}${window.location.pathname}`;
+      return `${base}?sheet=${encodeURIComponent(endpoint)}`;
+    }
+
+    function setSheetStatus(message, tone = "default") {
+      if (!els.sheetStatus) return;
+      els.sheetStatus.textContent = message;
+      els.sheetStatus.classList.toggle("warn", tone === "warn");
+    }
+
+    function renderSheetControls() {
+      if (!els.sheetEndpoint) return;
+      const sync = sanitizeSheetSync(state.sheetSync);
+      state.sheetSync = sync;
+      els.sheetEndpoint.value = sync.endpoint;
+      els.syncSheetButton.disabled = !sync.endpoint;
+      els.sheetShareLink.value = sync.endpoint
+        ? shareUrlForSheet(sync.endpoint)
+        : "연동 URL 저장 후 생성됩니다.";
+      const last = sync.lastSyncAt ? `마지막 전송 요청 ${timeLabel(sync.lastSyncAt)}` : "연동 URL을 저장하면 이후 근태 기록이 시트로 전송됩니다.";
+      setSheetStatus(last);
+    }
+
+    function saveSheetEndpoint() {
+      if (!isAdmin()) return;
+      const endpoint = els.sheetEndpoint.value.trim();
+      if (endpoint && !endpoint.startsWith("https://")) {
+        setSheetStatus("https://로 시작하는 Apps Script 웹 앱 URL을 입력하세요.", "warn");
+        return;
+      }
+
+      state.sheetSync = {
+        ...sanitizeSheetSync(state.sheetSync),
+        endpoint
+      };
+      saveState();
+      renderSheetControls();
+      setSheetStatus(endpoint ? "시트 연동 URL을 저장했습니다. 직원 공유 링크를 전달하세요." : "시트 연동 URL을 비웠습니다.");
+    }
+
+    function serializeAttendanceEntry(entry, eventType, message = "") {
+      normalizeAttendanceEntry(entry);
+      const owner = userById(entry?.userId);
+      return {
+        eventType,
+        username: owner?.username || "",
+        userId: entry?.userId || "",
+        date: entry?.date || todayKey(),
+        clockInAt: firstClockIn(entry) || "",
+        clockOutAt: latestClockOut(entry) || "",
+        outsideCount: entry?.outsideCount || 0,
+        sessionCount: entry?.sessions?.length || 0,
+        status: owner?.status || "",
+        message
+      };
+    }
+
+    async function sendSheetPayload(payload, options = {}) {
+      const endpoint = sheetEndpoint();
+      if (!endpoint) return false;
+
+      try {
+        await fetch(endpoint, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify({
+            ...payload,
+            source: `${window.location.origin}${window.location.pathname}`,
+            sentAt: new Date().toISOString()
+          })
+        });
+        state.sheetSync.lastSyncAt = new Date().toISOString();
+        saveState();
+        if (options.showStatus) {
+          setSheetStatus("Google Sheets 전송 요청을 완료했습니다.");
+          renderSheetControls();
+        }
+        return true;
+      } catch {
+        if (options.showStatus) {
+          setSheetStatus("시트 전송에 실패했습니다. 웹 앱 URL과 배포 권한을 확인하세요.", "warn");
+        }
+        return false;
+      }
+    }
+
+    function syncAttendanceEntry(entry, eventType, message) {
+      if (!entry || !sheetEndpoint()) return;
+      sendSheetPayload({
+        type: "attendance_event",
+        record: serializeAttendanceEntry(entry, eventType, message)
+      });
+    }
+
+    async function syncAllAttendanceToSheet() {
+      if (!isAdmin()) return;
+      if (!sheetEndpoint()) {
+        setSheetStatus("먼저 Apps Script 웹 앱 URL을 저장하세요.", "warn");
+        return;
+      }
+
+      const records = state.attendance
+        .map(normalizeAttendanceEntry)
+        .filter(firstClockIn)
+        .map((entry) => serializeAttendanceEntry(entry, "manual_sync", "기존 근태 전송"));
+
+      if (!records.length) {
+        setSheetStatus("전송할 근태 기록이 없습니다.");
+        return;
+      }
+
+      setSheetStatus(`${records.length}건을 Google Sheets로 전송 중입니다.`);
+      const ok = await sendSheetPayload({
+        type: "attendance_batch",
+        records
+      });
+
+      if (ok) {
+        renderSheetControls();
+        setSheetStatus(`${records.length}건의 기존 근태 전송 요청을 완료했습니다.`);
+      }
+    }
+
+    function kstDateParts(date = new Date()) {
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: KST_TIME_ZONE,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(date);
+      const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+      return {
+        year: Number(values.year),
+        month: Number(values.month),
+        day: Number(values.day)
+      };
+    }
+
+    function dateKeyFromParts(year, month, day) {
+      return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+
+    function todayKey(date = new Date()) {
+      const parts = kstDateParts(date);
+      return dateKeyFromParts(parts.year, parts.month, parts.day);
+    }
+
+    function timeLabel(iso) {
+      return new Date(iso).toLocaleTimeString("ko-KR", {
+        timeZone: KST_TIME_ZONE,
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      });
+    }
+
+    function monthLabel(date = new Date()) {
+      return date.toLocaleDateString("ko-KR", {
+        timeZone: KST_TIME_ZONE,
+        year: "numeric",
+        month: "long"
+      });
+    }
+
+    function monthTitle(year, monthIndex) {
+      return `${year}년 ${monthIndex + 1}월`;
+    }
+
+    function koreanHolidayName(dateKey) {
+      return KOREAN_HOLIDAYS[dateKey] || "";
+    }
+
+    async function passwordHash(value) {
+      if (!window.crypto?.subtle) {
+        let hash = 2166136261;
+        for (let index = 0; index < value.length; index += 1) {
+          hash ^= value.charCodeAt(index);
+          hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+        }
+        return `local-${(hash >>> 0).toString(16)}`;
+      }
+
+      const data = new TextEncoder().encode(value);
+      const digest = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(digest))
+        .map((byte) => byte.toString(16).padStart(2, "0"))
+        .join("");
+    }
+
+    function setAuthMode(nextMode) {
+      if (nextMode === "register" && state.users.length > 0) {
+        authMode = "login";
+        els.authMessage.textContent = "계정 생성은 관리자 메뉴에서 가능합니다.";
+      } else {
+        authMode = nextMode;
+      }
+      const isLogin = authMode === "login";
+      els.loginTab.setAttribute("aria-selected", String(isLogin));
+      els.registerTab.setAttribute("aria-selected", String(!isLogin));
+      els.registerTab.classList.toggle("hidden", state.users.length > 0);
+      els.authSubmit.textContent = isLogin ? "접속" : "관리자 생성";
+      els.password.setAttribute("autocomplete", isLogin ? "current-password" : "new-password");
+      if (nextMode !== "register" || state.users.length === 0) {
+        els.authMessage.textContent = "";
+      }
+    }
+
+    function uid(prefix) {
+      return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function currentUser() {
+      return state.users.find((user) => user.id === state.session?.userId) || null;
+    }
+
+    function userById(userId) {
+      return state.users.find((user) => user.id === userId) || null;
+    }
+
+    function addLog(userId, type, message) {
+      state.logs.unshift({
+        id: uid("log"),
+        userId,
+        type,
+        message,
+        createdAt: new Date().toISOString()
+      });
+      state.logs = state.logs.slice(0, 160);
+    }
+
+    function getTodayAttendance(userId) {
+      const date = todayKey();
+      return normalizeAttendanceEntry(state.attendance.find((entry) => entry.userId === userId && entry.date === date));
+    }
+
+    function normalizeAttendanceEntry(entry) {
+      if (!entry) return null;
+
+      if (!Array.isArray(entry.sessions) || !entry.sessions.length) {
+        entry.sessions = entry.clockInAt ? [{
+          clockInAt: entry.clockInAt,
+          clockOutAt: entry.clockOutAt || null
+        }] : [];
+      }
+
+      entry.sessions = entry.sessions.filter((session) => session.clockInAt);
+      const firstSession = entry.sessions[0];
+      const lastSession = entry.sessions[entry.sessions.length - 1];
+      entry.clockInAt = firstSession?.clockInAt || entry.clockInAt || null;
+      entry.clockOutAt = lastSession?.clockOutAt || null;
+      entry.outsideCount = Number(entry.outsideCount) || 0;
+      return entry;
+    }
+
+    function activeSession(entry) {
+      normalizeAttendanceEntry(entry);
+      return entry?.sessions.find((session) => !session.clockOutAt) || null;
+    }
+
+    function ensureClockIn(user) {
+      let entry = getTodayAttendance(user.id);
+      let created = false;
+      if (!entry) {
+        const now = new Date().toISOString();
+        entry = {
+          id: uid("attendance"),
+          userId: user.id,
+          date: todayKey(),
+          clockInAt: now,
+          clockOutAt: null,
+          sessions: [{ clockInAt: now, clockOutAt: null }],
+          outsideCount: 0
+        };
+        state.attendance.push(entry);
+        addLog(user.id, "clock_in", `${user.username} 출근`);
+        created = true;
+      } else {
+        normalizeAttendanceEntry(entry);
+        addLog(user.id, "reconnect", `${user.username} 재접속`);
+      }
+      user.status = activeSession(entry) ? "출근" : "퇴근";
+      user.position = entry.clockOutAt ? POINTS.entry : (user.position || POINTS.desk);
+      if (created) syncAttendanceEntry(entry, "clock_in", `${user.username} 출근`);
+    }
+
+    async function handleAuth(event) {
+      event.preventDefault();
+      const username = els.username.value.trim();
+      const password = els.password.value;
+
+      if (!username || !password) {
+        els.authMessage.textContent = "아이디와 패스워드를 입력하세요.";
+        return;
+      }
+
+      const hash = await passwordHash(password);
+      const existing = state.users.find((user) => user.username === username);
+
+      if (authMode === "register") {
+        if (state.users.length > 0) {
+          els.authMessage.textContent = "계정 생성은 관리자 메뉴에서 가능합니다.";
+          setAuthMode("login");
+          return;
+        }
+
+        if (existing) {
+          els.authMessage.textContent = "이미 사용 중인 아이디입니다.";
+          return;
+        }
+
+        const user = {
+          id: uid("user"),
+          username,
+          passwordHash: hash,
+          characterName: username,
+          role: "admin",
+          status: "출근",
+          position: POINTS.desk,
+          createdAt: new Date().toISOString()
+        };
+        state.users.push(user);
+        state.session = { userId: user.id, loggedInAt: new Date().toISOString() };
+        ensureClockIn(user);
+        saveState();
+        enterDashboard();
+        return;
+      }
+
+      if (!existing || existing.passwordHash !== hash) {
+        els.authMessage.textContent = "아이디 또는 패스워드가 맞지 않습니다.";
+        return;
+      }
+
+      state.session = { userId: existing.id, loggedInAt: new Date().toISOString() };
+      ensureClockIn(existing);
+      saveState();
+      enterDashboard();
+    }
+
+    function enterDashboard() {
+      els.authScreen.classList.add("hidden");
+      els.dashboard.classList.remove("hidden");
+      renderAll();
+    }
+
+    function showAuth() {
+      els.dashboard.classList.add("hidden");
+      els.authScreen.classList.remove("hidden");
+      setAuthMode(state.users.length ? "login" : "register");
+      if (!state.users.length) {
+        els.authMessage.textContent = "처음 사용할 관리자 계정을 생성하세요.";
+      }
+    }
+
+    function renderAll() {
+      renderAccessControls();
+      renderDesks();
+      renderNotice();
+      renderLayoutTools();
+      renderCharacter();
+      renderTopLog();
+      renderSideLog();
+      renderUserLabel();
+      renderSheetControls();
+    }
+
+    function renderAccessControls() {
+      const admin = isAdmin();
+      els.dashboard.classList.toggle("employee-view", !admin);
+      els.sideLog.classList.toggle("admin-only-hidden", !admin);
+      els.adminMenuButton.classList.toggle("hidden", !admin);
+      els.layoutEditButton.classList.toggle("hidden", !admin);
+      els.calendarButton.classList.toggle("hidden", !admin);
+      els.calendarObject.classList.toggle("hidden", !admin);
+
+      if (!admin && deskEditMode) {
+        deskEditMode = false;
+        selectedDeskId = null;
+      }
+    }
+
+    function renderUserLabel() {
+      const user = currentUser();
+      els.currentUserLabel.textContent = user ? `${user.username} 접속 중` : "";
+    }
+
+    function renderNotice() {
+      els.noticeText.textContent = state.noticeText || "오늘의 업무 현황을 확인하세요.";
+    }
+
+    function renderLayoutTools() {
+      els.officeStage.classList.toggle("layout-editing", deskEditMode);
+      els.layoutEditButton.setAttribute("aria-pressed", String(deskEditMode));
+      els.layoutEditButton.textContent = deskEditMode ? "배치 완료" : "책상 배치";
+      const hasSelectedDesk = Boolean(selectedDeskId && deskById(selectedDeskId));
+      els.deleteDeskButton.disabled = !hasSelectedDesk;
+      els.rotateDeskButton.disabled = !hasSelectedDesk;
+      els.flipDeskButton.disabled = !hasSelectedDesk;
+    }
+
+    function renderDesks() {
+      els.deskLayer.innerHTML = "";
+      state.deskLayout = sanitizeDeskLayout(state.deskLayout);
+
+      state.deskLayout.forEach((desk, index) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = [
+          "desk",
+          desk.vertical ? "vertical" : "",
+          desk.flipped ? "flipped" : "",
+          desk.id === selectedDeskId ? "selected" : ""
+        ].filter(Boolean).join(" ");
+        item.dataset.deskId = desk.id;
+        item.style.left = `${desk.x}%`;
+        item.style.top = `${desk.y}%`;
+        item.tabIndex = deskEditMode ? 0 : -1;
+        item.setAttribute("aria-label", `${index + 1}번 책상`);
+        els.deskLayer.appendChild(item);
+      });
+    }
+
+    function renderCharacter() {
+      const user = currentUser();
+      if (!user) return;
+      const point = clampPoint(user.position || POINTS.desk);
+      els.myCharacter.style.left = `${point.x}%`;
+      els.myCharacter.style.top = `${point.y}%`;
+      els.statusBadge.textContent = user.status || "출근";
+      els.nameBadge.textContent = user.username || user.characterName || "사용자";
+      els.myCharacter.setAttribute("aria-label", `${user.username || "내"} 캐릭터 명령`);
+      els.myCharacter.style.setProperty("--shirt", statusColor(user.status));
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function clampPoint(point) {
+      return {
+        x: clamp(Number(point.x) || POINTS.desk.x, CHARACTER_BOUNDS.minX, CHARACTER_BOUNDS.maxX),
+        y: clamp(Number(point.y) || POINTS.desk.y, CHARACTER_BOUNDS.minY, CHARACTER_BOUNDS.maxY)
+      };
+    }
+
+    function statusColor(status) {
+      if (status === "업무") return "var(--blue)";
+      if (status === "외근 대기") return "var(--amber)";
+      if (status === "퇴근") return "var(--coral)";
+      return "var(--teal)";
+    }
+
+    function firstClockIn(entry) {
+      normalizeAttendanceEntry(entry);
+      return entry?.sessions[0]?.clockInAt || entry?.clockInAt || null;
+    }
+
+    function latestClockOut(entry) {
+      normalizeAttendanceEntry(entry);
+      const completed = entry?.sessions.filter((session) => session.clockOutAt) || [];
+      return completed[completed.length - 1]?.clockOutAt || null;
+    }
+
+    function renderTopLog() {
+      const user = currentUser();
+      els.todayLine.innerHTML = "";
+      if (!user) return;
+      const entry = getTodayAttendance(user.id);
+      const chips = [];
+      const firstIn = firstClockIn(entry);
+      const active = activeSession(entry);
+      const latestOut = latestClockOut(entry);
+
+      if (firstIn) {
+        chips.push(`출근 ${timeLabel(firstIn)}`);
+      }
+
+      if (latestOut) {
+        chips.push(active ? `이전 퇴근 ${timeLabel(latestOut)}` : `퇴근 ${timeLabel(latestOut)}`);
+      }
+
+      if (entry?.outsideCount) {
+        chips.push(`외근 ${entry.outsideCount}회`);
+      }
+
+      if (!chips.length) {
+        chips.push("오늘 기록 없음");
+      }
+
+      chips.forEach((text) => {
+        const chip = document.createElement("span");
+        chip.className = "today-chip";
+        chip.innerHTML = `<span class="dot" aria-hidden="true"></span><span>${text}</span>`;
+        els.todayLine.appendChild(chip);
+      });
+    }
+
+    function renderSideLog() {
+      const user = currentUser();
+      els.logList.innerHTML = "";
+      if (!user || !isAdmin(user)) return;
+
+      const logs = state.logs.filter((log) => log.userId === user.id).slice(0, 80);
+      if (!logs.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-log";
+        empty.textContent = "아직 로그가 없습니다.";
+        els.logList.appendChild(empty);
+        return;
+      }
+
+      logs.forEach((log) => {
+        const item = document.createElement("div");
+        item.className = "log-item";
+        item.innerHTML = `
+          <div class="log-time">${timeLabel(log.createdAt)}</div>
+          <div class="log-text">${escapeHtml(log.message)}</div>
+        `;
+        els.logList.appendChild(item);
+      });
+    }
+
+    function escapeHtml(value) {
+      return value
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function openCommandMenu() {
+      const user = currentUser();
+      if (!user) return;
+      const rect = els.myCharacter.getBoundingClientRect();
+      const stageRect = els.officeStage.getBoundingClientRect();
+      els.commandMenu.style.left = `${Math.min(rect.left - stageRect.left + 28, stageRect.width - 168)}px`;
+      els.commandMenu.style.top = `${Math.max(rect.top - stageRect.top - 8, 8)}px`;
+      els.commandMenu.classList.add("open");
+    }
+
+    function closeCommandMenu() {
+      els.commandMenu.classList.remove("open");
+    }
+
+    function setUserStatus(status, point) {
+      const user = currentUser();
+      if (!user) return;
+      user.status = status;
+      user.position = point;
+      saveState();
+      renderAll();
+    }
+
+    function toggleDeskEditMode(forceValue) {
+      if (!isAdmin()) return;
+      deskEditMode = typeof forceValue === "boolean" ? forceValue : !deskEditMode;
+      if (!deskEditMode) selectedDeskId = null;
+      renderAll();
+    }
+
+    function addDesk() {
+      if (!isAdmin()) return;
+      const index = state.deskLayout.length + 1;
+      const desk = {
+        id: uid("desk"),
+        x: clamp(28 + (index % 5) * 8, 4, 84),
+        y: clamp(28 + Math.floor(index / 5) * 10, 8, 78),
+        vertical: false,
+        flipped: false
+      };
+      state.deskLayout.push(desk);
+      selectedDeskId = desk.id;
+      saveState();
+      renderAll();
+    }
+
+    function resetDeskLayout() {
+      if (!isAdmin()) return;
+      state.deskLayout = defaultDeskLayout();
+      selectedDeskId = null;
+      saveState();
+      renderAll();
+    }
+
+    function deskById(deskId) {
+      return state.deskLayout.find((desk) => desk.id === deskId) || null;
+    }
+
+    function selectDesk(deskId) {
+      if (!deskEditMode) return;
+      selectedDeskId = deskId;
+      renderAll();
+    }
+
+    function deleteSelectedDesk() {
+      if (!isAdmin()) return;
+      if (!selectedDeskId) return;
+      state.deskLayout = state.deskLayout.filter((desk) => desk.id !== selectedDeskId);
+      selectedDeskId = null;
+      saveState();
+      renderAll();
+    }
+
+    function rotateSelectedDesk() {
+      if (!isAdmin()) return;
+      const desk = deskById(selectedDeskId);
+      if (!desk) return;
+      desk.vertical = !desk.vertical;
+      saveState();
+      renderAll();
+    }
+
+    function flipSelectedDesk() {
+      if (!isAdmin()) return;
+      const desk = deskById(selectedDeskId);
+      if (!desk) return;
+      desk.flipped = !desk.flipped;
+      saveState();
+      renderAll();
+    }
+
+    function startDeskDrag(event) {
+      if (!deskEditMode) return;
+      const deskElement = event.target.closest(".desk");
+      if (!deskElement) return;
+      event.preventDefault();
+      selectedDeskId = deskElement.dataset.deskId;
+      const stageRect = els.officeStage.getBoundingClientRect();
+      const deskRect = deskElement.getBoundingClientRect();
+      draggedDesk = {
+        id: deskElement.dataset.deskId,
+        pointerId: event.pointerId,
+        offsetX: event.clientX - deskRect.left,
+        offsetY: event.clientY - deskRect.top,
+        widthPct: deskRect.width / stageRect.width * 100,
+        heightPct: deskRect.height / stageRect.height * 100
+      };
+      deskElement.setPointerCapture(event.pointerId);
+    }
+
+    function moveDeskDrag(event) {
+      if (!draggedDesk || event.pointerId !== draggedDesk.pointerId) return;
+      const desk = deskById(draggedDesk.id);
+      const deskElement = els.deskLayer.querySelector(`[data-desk-id="${draggedDesk.id}"]`);
+      if (!desk || !deskElement) return;
+
+      const stageRect = els.officeStage.getBoundingClientRect();
+      const nextX = (event.clientX - stageRect.left - draggedDesk.offsetX) / stageRect.width * 100;
+      const nextY = (event.clientY - stageRect.top - draggedDesk.offsetY) / stageRect.height * 100;
+      desk.x = clamp(nextX, 0, 100 - draggedDesk.widthPct);
+      desk.y = clamp(nextY, 0, 100 - draggedDesk.heightPct);
+      deskElement.style.left = `${desk.x}%`;
+      deskElement.style.top = `${desk.y}%`;
+    }
+
+    function endDeskDrag(event) {
+      if (!draggedDesk || event.pointerId !== draggedDesk.pointerId) return;
+      saveState();
+      draggedDesk = null;
+      renderAll();
+    }
+
+    function rotateDesk(event) {
+      if (!deskEditMode) return;
+      const deskElement = event.target.closest(".desk");
+      if (!deskElement) return;
+      const desk = deskById(deskElement.dataset.deskId);
+      if (!desk) return;
+      selectedDeskId = desk.id;
+      desk.vertical = !desk.vertical;
+      saveState();
+      renderAll();
+    }
+
+    function editNotice() {
+      if (!isAdmin()) return;
+      const nextNotice = window.prompt("공지사항", state.noticeText || "");
+      if (nextNotice === null) return;
+      state.noticeText = nextNotice.trim() || "오늘의 업무 현황을 확인하세요.";
+      saveState();
+      renderNotice();
+    }
+
+    function keyboardVector(event) {
+      const vectors = {
+        ArrowUp: [0, -CHARACTER_STEP],
+        ArrowDown: [0, CHARACTER_STEP],
+        ArrowLeft: [-CHARACTER_STEP, 0],
+        ArrowRight: [CHARACTER_STEP, 0],
+        KeyW: [0, -CHARACTER_STEP],
+        KeyS: [0, CHARACTER_STEP],
+        KeyA: [-CHARACTER_STEP, 0],
+        KeyD: [CHARACTER_STEP, 0],
+        Numpad8: [0, -CHARACTER_STEP],
+        Numpad2: [0, CHARACTER_STEP],
+        Numpad4: [-CHARACTER_STEP, 0],
+        Numpad6: [CHARACTER_STEP, 0]
+      };
+      return vectors[event.code] || vectors[event.key] || null;
+    }
+
+    function moveCharacterBy(deltaX, deltaY) {
+      const user = currentUser();
+      if (!user || user.status === "퇴근") return;
+      clearTimeout(outsideTimer);
+      const point = clampPoint(user.position || POINTS.desk);
+      user.position = clampPoint({
+        x: point.x + deltaX,
+        y: point.y + deltaY
+      });
+      if (user.status === "외근 이동") {
+        user.status = "출근";
+      }
+      saveState();
+      renderAll();
+    }
+
+    function moveCharacterToClick(event) {
+      if (deskEditMode) return;
+      const user = currentUser();
+      if (!user || user.status === "퇴근") return;
+      if (event.target.closest(".character, .command-menu, .calendar, .notice-board, .layout-tools")) return;
+
+      const stageRect = els.officeStage.getBoundingClientRect();
+      const x = (event.clientX - stageRect.left) / stageRect.width * 100;
+      const y = (event.clientY - stageRect.top) / stageRect.height * 100;
+      clearTimeout(outsideTimer);
+      user.position = clampPoint({ x, y });
+      if (user.status === "외근 이동") {
+        user.status = "출근";
+      }
+      saveState();
+      renderAll();
+    }
+
+    function runCommand(command) {
+      const user = currentUser();
+      if (!user) return;
+      closeCommandMenu();
+
+      if (command === "clockin") {
+        clockIn();
+      }
+
+      if (command === "outside") {
+        if (user.status === "퇴근") {
+          clockIn({ render: false });
+        }
+        clearTimeout(outsideTimer);
+        user.status = "외근 이동";
+        user.position = POINTS.entry;
+        addLog(user.id, "outside_selected", `${user.username} 외근 선택`);
+        saveState();
+        renderAll();
+        outsideTimer = setTimeout(() => {
+          const latestUser = currentUser();
+          if (!latestUser || latestUser.status !== "외근 이동") return;
+          latestUser.status = "외근 대기";
+          latestUser.position = POINTS.outsideWait;
+          const entry = getTodayAttendance(latestUser.id);
+          if (entry) entry.outsideCount += 1;
+          addLog(latestUser.id, "outside_waiting", `${latestUser.username} 사무실 입구에서 대기`);
+          if (entry) syncAttendanceEntry(entry, "outside_waiting", `${latestUser.username} 외근 대기`);
+          saveState();
+          renderAll();
+        }, 560);
+      }
+
+      if (command === "clockout") {
+        clockOut();
+      }
+    }
+
+    function clockIn(options = {}) {
+      const user = currentUser();
+      if (!user) return;
+      const shouldRender = options.render !== false;
+      const now = new Date().toISOString();
+      let entry = getTodayAttendance(user.id);
+      let shouldSync = false;
+
+      if (!entry) {
+        entry = {
+          id: uid("attendance"),
+          userId: user.id,
+          date: todayKey(),
+          clockInAt: now,
+          clockOutAt: null,
+          sessions: [{ clockInAt: now, clockOutAt: null }],
+          outsideCount: 0
+        };
+        state.attendance.push(entry);
+        addLog(user.id, "clock_in", `${user.username} 출근`);
+        shouldSync = true;
+      } else if (activeSession(entry)) {
+        addLog(user.id, "clock_in_check", `${user.username} 출근 중`);
+      } else {
+        entry.sessions.push({ clockInAt: now, clockOutAt: null });
+        entry.clockOutAt = null;
+        addLog(user.id, "clock_in", `${user.username} 출근`);
+        shouldSync = true;
+      }
+
+      normalizeAttendanceEntry(entry);
+      user.status = "출근";
+      user.position = POINTS.desk;
+      if (shouldSync) syncAttendanceEntry(entry, "clock_in", `${user.username} 출근`);
+      saveState();
+      if (shouldRender) renderAll();
+    }
+
+    function clockOut() {
+      const user = currentUser();
+      if (!user) return;
+      const entry = getTodayAttendance(user.id);
+      const session = activeSession(entry);
+      if (entry && session) {
+        const now = new Date().toISOString();
+        session.clockOutAt = now;
+        entry.clockOutAt = now;
+        addLog(user.id, "clock_out", `${user.username} 퇴근`);
+        syncAttendanceEntry(entry, "clock_out", `${user.username} 퇴근`);
+      } else {
+        addLog(user.id, "clock_out", `${user.username} 퇴근 확인`);
+        if (entry) syncAttendanceEntry(entry, "clock_out_check", `${user.username} 퇴근 확인`);
+      }
+      user.status = "퇴근";
+      user.position = POINTS.entry;
+      saveState();
+      renderAll();
+    }
+
+    function logout() {
+      closeCommandMenu();
+      closeCalendar();
+      closeAdminModal();
+      deskEditMode = false;
+      selectedDeskId = null;
+      state.session = null;
+      saveState();
+      els.username.value = "";
+      els.password.value = "";
+      showAuth();
+    }
+
+    function openCalendar() {
+      if (!isAdmin()) return;
+      renderCalendar();
+      els.calendarModal.classList.add("open");
+      els.calendarModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeCalendar() {
+      els.calendarModal.classList.remove("open");
+      els.calendarModal.setAttribute("aria-hidden", "true");
+    }
+
+    function openAdminModal() {
+      if (!isAdmin()) return;
+      renderAdminUsers();
+      renderSheetControls();
+      els.adminMessage.textContent = "";
+      els.adminModal.classList.add("open");
+      els.adminModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeAdminModal() {
+      els.adminModal.classList.remove("open");
+      els.adminModal.setAttribute("aria-hidden", "true");
+    }
+
+    function renderAdminUsers() {
+      els.adminUserList.innerHTML = "";
+      state.users
+        .slice()
+        .sort((a, b) => a.username.localeCompare(b.username, "ko-KR"))
+        .forEach((user) => {
+          const row = document.createElement("div");
+          row.className = "admin-user-row";
+          row.innerHTML = `
+            <div>
+              <strong>${escapeHtml(user.username)}</strong>
+              <span>${user.role === "admin" ? "관리자" : "직원"}</span>
+            </div>
+            <span>${user.status || "상태 없음"}</span>
+          `;
+          els.adminUserList.appendChild(row);
+        });
+    }
+
+    async function createUserFromAdmin(event) {
+      event.preventDefault();
+      if (!isAdmin()) return;
+
+      const username = els.adminNewUsername.value.trim();
+      const password = els.adminNewPassword.value;
+      const role = els.adminNewRole.value === "admin" ? "admin" : "employee";
+
+      if (!username || !password) {
+        els.adminMessage.textContent = "아이디와 패스워드를 입력하세요.";
+        return;
+      }
+
+      if (state.users.some((user) => user.username === username)) {
+        els.adminMessage.textContent = "이미 사용 중인 아이디입니다.";
+        return;
+      }
+
+      const user = {
+        id: uid("user"),
+        username,
+        passwordHash: await passwordHash(password),
+        characterName: username,
+        role,
+        status: "퇴근",
+        position: POINTS.entry,
+        createdAt: new Date().toISOString()
+      };
+
+      state.users.push(user);
+      saveState();
+      els.adminCreateForm.reset();
+      els.adminNewRole.value = "employee";
+      els.adminMessage.textContent = `${username} 계정을 생성했습니다.`;
+      renderAdminUsers();
+    }
+
+    function monthEntries(year, monthIndex) {
+      const monthPrefix = `${year}-${String(monthIndex + 1).padStart(2, "0")}-`;
+      return state.attendance
+        .filter((item) => typeof item.date === "string" && item.date.startsWith(monthPrefix))
+        .map(normalizeAttendanceEntry)
+        .filter((item) => firstClockIn(item));
+    }
+
+    function entriesForDate(date, userId = calendarFilterUserId) {
+      return state.attendance
+        .filter((item) => item.date === date)
+        .map(normalizeAttendanceEntry)
+        .filter((item) => firstClockIn(item))
+        .filter((item) => userId === "all" || item.userId === userId)
+        .sort((a, b) => {
+          const nameA = userById(a.userId)?.username || "";
+          const nameB = userById(b.userId)?.username || "";
+          return nameA.localeCompare(nameB, "ko-KR");
+        });
+    }
+
+    function userMonthStats(userId, year, monthIndex) {
+      const entries = monthEntries(year, monthIndex).filter((entry) => entry.userId === userId);
+      const outsideTotal = entries.reduce((sum, entry) => sum + (entry.outsideCount || 0), 0);
+      const activeCount = entries.filter(activeSession).length;
+      return { days: entries.length, outsideTotal, activeCount };
+    }
+
+    function selectedCalendarUserLabel() {
+      if (calendarFilterUserId === "all") return "전체 사용자";
+      return userById(calendarFilterUserId)?.username || "선택 사용자";
+    }
+
+    function renderCalendarUsers(year, monthIndex) {
+      const allEntries = monthEntries(year, monthIndex);
+      els.calendarUsers.innerHTML = "";
+
+      const allCard = document.createElement("button");
+      allCard.type = "button";
+      allCard.className = "user-card";
+      allCard.dataset.userId = "all";
+      allCard.setAttribute("aria-pressed", String(calendarFilterUserId === "all"));
+      allCard.innerHTML = `
+        <strong>전체</strong>
+        <span>${allEntries.length}건 기록</span>
+        <span>사용자 ${state.users.length}명</span>
+      `;
+      els.calendarUsers.appendChild(allCard);
+
+      state.users
+        .slice()
+        .sort((a, b) => a.username.localeCompare(b.username, "ko-KR"))
+        .forEach((user) => {
+          const stats = userMonthStats(user.id, year, monthIndex);
+          const card = document.createElement("button");
+          card.type = "button";
+          card.className = "user-card";
+          card.dataset.userId = user.id;
+          card.setAttribute("aria-pressed", String(calendarFilterUserId === user.id));
+          card.innerHTML = `
+            <strong>${escapeHtml(user.username)}</strong>
+            <span>출근 ${stats.days}일</span>
+            <span>${stats.activeCount ? "진행 중" : `외근 ${stats.outsideTotal}회`}</span>
+          `;
+          els.calendarUsers.appendChild(card);
+        });
+    }
+
+    function renderDayAttendance(cell, entries) {
+      if (!entries.length) return;
+
+      if (calendarFilterUserId === "all") {
+        const names = entries
+          .slice(0, 3)
+          .map((entry) => userById(entry.userId)?.username || "알 수 없음")
+          .join(", ");
+        const detail = document.createElement("div");
+        detail.className = "day-entry compact";
+        detail.innerHTML = `
+          <strong>${entries.length}명 기록</strong>
+          <span>${escapeHtml(names)}</span>
+        `;
+        cell.appendChild(detail);
+
+        if (entries.length > 3) {
+          const more = document.createElement("div");
+          more.className = "day-more";
+          more.textContent = `외 ${entries.length - 3}명`;
+          cell.appendChild(more);
+        }
+        return;
+      }
+
+      entries.forEach((entry) => {
+        const owner = userById(entry.userId);
+        const detail = document.createElement("div");
+        detail.className = "day-entry";
+        const firstIn = firstClockIn(entry);
+        const latestOut = latestClockOut(entry);
+        const out = activeSession(entry) ? "진행 중" : (latestOut ? timeLabel(latestOut) : "-");
+        const sessionCount = entry.sessions.length > 1 ? `<span>${entry.sessions.length}회 출근</span>` : "";
+        detail.innerHTML = `
+          <strong>${escapeHtml(owner?.username || "알 수 없음")}</strong>
+          <span>출근 ${timeLabel(firstIn)}</span>
+          <span>퇴근 ${out}</span>
+          ${sessionCount}
+          <span>외근 ${entry.outsideCount || 0}회</span>
+        `;
+        cell.appendChild(detail);
+      });
+    }
+
+    function renderCalendar() {
+      const user = currentUser();
+      if (!user) return;
+      if (calendarFilterUserId !== "all" && !userById(calendarFilterUserId)) {
+        calendarFilterUserId = "all";
+      }
+
+      const currentKst = kstDateParts();
+      const year = currentKst.year;
+      const month = currentKst.month - 1;
+      const currentDateKey = todayKey();
+      els.calendarTitle.textContent = `${monthTitle(year, month)} 월간 근태`;
+      els.calendarSubtitle.textContent = `한국시간 기준 · ${selectedCalendarUserLabel()}`;
+      els.calendarGrid.innerHTML = "";
+      renderCalendarUsers(year, month);
+
+      ["일", "월", "화", "수", "목", "금", "토"].forEach((name) => {
+        const day = document.createElement("div");
+        day.className = "weekday";
+        day.textContent = name;
+        els.calendarGrid.appendChild(day);
+      });
+
+      const firstDay = new Date(Date.UTC(year, month, 1));
+      const lastDay = new Date(Date.UTC(year, month + 1, 0));
+      const startOffset = firstDay.getUTCDay();
+      const lastDate = lastDay.getUTCDate();
+      const totalCells = Math.ceil((startOffset + lastDate) / 7) * 7;
+
+      for (let index = 0; index < totalCells; index += 1) {
+        const dayNumber = index - startOffset + 1;
+        const cell = document.createElement("div");
+        cell.className = "day-cell";
+
+        if (dayNumber < 1 || dayNumber > lastDate) {
+          cell.classList.add("muted");
+          els.calendarGrid.appendChild(cell);
+          continue;
+        }
+
+        const date = dateKeyFromParts(year, month + 1, dayNumber);
+        const dayOfWeek = new Date(Date.UTC(year, month, dayNumber)).getUTCDay();
+        const holiday = koreanHolidayName(date);
+        const entries = entriesForDate(date);
+        if (date === currentDateKey) cell.classList.add("today");
+        if (dayOfWeek === 0 || dayOfWeek === 6) cell.classList.add("weekend");
+        if (holiday) cell.classList.add("holiday");
+
+        const dayNum = document.createElement("div");
+        dayNum.className = "day-num";
+        dayNum.innerHTML = `<span>${dayNumber}</span>${holiday ? `<span class="holiday-name">${holiday}</span>` : ""}`;
+        cell.appendChild(dayNum);
+
+        renderDayAttendance(cell, entries);
+        els.calendarGrid.appendChild(cell);
+      }
+    }
+
+    els.loginTab.addEventListener("click", () => setAuthMode("login"));
+    els.registerTab.addEventListener("click", () => setAuthMode("register"));
+    els.authForm.addEventListener("submit", handleAuth);
+    els.myCharacter.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (els.commandMenu.classList.contains("open")) {
+        closeCommandMenu();
+      } else {
+        openCommandMenu();
+      }
+    });
+    els.commandMenu.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-command]");
+      if (!button) return;
+      runCommand(button.dataset.command);
+    });
+    els.officeStage.addEventListener("click", (event) => {
+      if (!event.target.closest(".character") && !event.target.closest(".command-menu")) {
+        closeCommandMenu();
+      }
+      moveCharacterToClick(event);
+    });
+    els.layoutEditButton.addEventListener("click", () => toggleDeskEditMode());
+    els.addDeskButton.addEventListener("click", addDesk);
+    els.deleteDeskButton.addEventListener("click", deleteSelectedDesk);
+    els.rotateDeskButton.addEventListener("click", rotateSelectedDesk);
+    els.flipDeskButton.addEventListener("click", flipSelectedDesk);
+    els.resetDeskButton.addEventListener("click", resetDeskLayout);
+    els.doneDeskButton.addEventListener("click", () => toggleDeskEditMode(false));
+    els.noticeBoard.addEventListener("click", editNotice);
+    els.adminMenuButton.addEventListener("click", openAdminModal);
+    els.closeAdmin.addEventListener("click", closeAdminModal);
+    els.adminCreateForm.addEventListener("submit", createUserFromAdmin);
+    els.saveSheetButton.addEventListener("click", saveSheetEndpoint);
+    els.syncSheetButton.addEventListener("click", syncAllAttendanceToSheet);
+    els.deskLayer.addEventListener("pointerdown", startDeskDrag);
+    els.deskLayer.addEventListener("pointermove", moveDeskDrag);
+    els.deskLayer.addEventListener("pointerup", endDeskDrag);
+    els.deskLayer.addEventListener("pointercancel", endDeskDrag);
+    els.deskLayer.addEventListener("dblclick", rotateDesk);
+    els.calendarButton.addEventListener("click", openCalendar);
+    els.calendarObject.addEventListener("click", openCalendar);
+    els.closeCalendar.addEventListener("click", closeCalendar);
+    els.calendarModal.addEventListener("click", (event) => {
+      if (event.target === els.calendarModal) closeCalendar();
+    });
+    els.adminModal.addEventListener("click", (event) => {
+      if (event.target === els.adminModal) closeAdminModal();
+    });
+    els.calendarUsers.addEventListener("click", (event) => {
+      const card = event.target.closest(".user-card");
+      if (!card) return;
+      calendarFilterUserId = card.dataset.userId || "all";
+      renderCalendar();
+    });
+    els.clockOutButton.addEventListener("click", clockOut);
+    els.logoutButton.addEventListener("click", logout);
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeCommandMenu();
+        closeCalendar();
+        closeAdminModal();
+        if (deskEditMode) toggleDeskEditMode(false);
+        return;
+      }
+
+      const isDashboardOpen = !els.dashboard.classList.contains("hidden");
+      const isCalendarOpen = els.calendarModal.classList.contains("open");
+      const isTyping = ["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName);
+      const vector = keyboardVector(event);
+
+      if (isDashboardOpen && !isCalendarOpen && !isTyping && vector) {
+        event.preventDefault();
+        closeCommandMenu();
+        moveCharacterBy(vector[0], vector[1]);
+      }
+    });
+
+    if (state.session && currentUser()) {
+      enterDashboard();
+    } else {
+      showAuth();
+    }
+  </script>
+</body>
+</html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>업무 현황판</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #6a7480;
+      --line: #d8dee6;
+      --paper: #f7f8f5;
+      --office: #fbfbf8;
+      --tile: #edf1f2;
+      --teal: #178f8a;
+      --teal-dark: #0e6f70;
+      --coral: #dc6f54;
+      --amber: #d69a2d;
+      --blue: #4a7ab8;
+      --green: #4f9d62;
+      --panel: #ffffff;
+      --shadow: 0 14px 34px rgba(26, 36, 48, .12);
+      --pixel: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100%;
+    }
+
+    .auth-screen {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) minmax(460px, 1fr);
+      background:
+        linear-gradient(90deg, rgba(23, 143, 138, .08) 0 1px, transparent 1px 48px),
+        linear-gradient(0deg, rgba(23, 143, 138, .06) 0 1px, transparent 1px 48px),
+        var(--paper);
+    }
+
+    .auth-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      border-right: 1px solid var(--line);
+      background: rgba(255, 255, 255, .78);
+    }
+
+    .auth-box {
+      width: min(100%, 340px);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border: 3px solid var(--ink);
+      background:
+        linear-gradient(90deg, var(--teal) 0 50%, transparent 50%),
+        linear-gradient(var(--coral) 0 50%, var(--amber) 50%);
+      image-rendering: pixelated;
+      box-shadow: 4px 4px 0 #c9d4d2;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.15;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 4px;
+      margin-bottom: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f2f5f4;
+    }
+
+    .auth-tabs button {
+      min-height: 38px;
+      border: 0;
+      border-radius: 6px;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 700;
+    }
+
+    .auth-tabs button[aria-selected="true"] {
+      color: var(--ink);
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(20, 30, 40, .12);
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      font-size: 13px;
+      font-weight: 800;
+      color: #26313d;
+    }
+
+    .field input {
+      min-height: 44px;
+      border: 1px solid #cbd4dd;
+      border-radius: 6px;
+      padding: 0 12px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .field input:focus {
+      outline: 3px solid rgba(23, 143, 138, .18);
+      border-color: var(--teal);
+    }
+
+    .primary-btn,
+    .ghost-btn,
+    .danger-btn {
+      min-height: 42px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 14px;
+      font-weight: 800;
+    }
+
+    .primary-btn {
+      width: 100%;
+      color: #fff;
+      background: var(--teal);
+    }
+
+    .primary-btn:hover {
+      background: var(--teal-dark);
+    }
+
+    .ghost-btn {
+      color: var(--ink);
+      background: #fff;
+      border-color: var(--line);
+    }
+
+    .ghost-btn:hover {
+      border-color: #aab7c2;
+      background: #f7faf9;
+    }
+
+    .ghost-btn[aria-pressed="true"] {
+      border-color: var(--teal);
+      background: #e7f5f2;
+      color: #125f5e;
+    }
+
+    .danger-btn {
+      color: #fff;
+      background: var(--coral);
+    }
+
+    .danger-btn:hover {
+      background: #c75643;
+    }
+
+    .msg {
+      min-height: 21px;
+      margin-top: 12px;
+      color: var(--coral);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .auth-preview {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 42px;
+    }
+
+    .mini-office {
+      width: min(100%, 820px);
+      align-self: center;
+      aspect-ratio: 16 / 10;
+      border: 4px solid #26313d;
+      box-shadow: 10px 10px 0 rgba(23, 32, 42, .13);
+      background:
+        linear-gradient(90deg, rgba(23, 32, 42, .08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(23, 32, 42, .08) 1px, transparent 1px),
+        var(--office);
+      background-size: 34px 34px;
+      image-rendering: pixelated;
+      position: relative;
+    }
+
+    .mini-office::before,
+    .mini-office::after {
+      content: "";
+      position: absolute;
+      border: 4px solid #51606f;
+      background: #ffffff;
+    }
+
+    .mini-office::before {
+      width: 34%;
+      height: 22%;
+      left: 9%;
+      top: 18%;
+      box-shadow: 260px 120px 0 -4px #ffffff, 260px 120px 0 0 #51606f;
+    }
+
+    .mini-office::after {
+      width: 16%;
+      height: 42%;
+      right: 8%;
+      top: 20%;
+      border-color: var(--blue);
+      background: rgba(74, 122, 184, .13);
+    }
+
+    .mini-avatar {
+      position: absolute;
+      width: 38px;
+      height: 42px;
+      left: 48%;
+      top: 52%;
+      background: var(--teal);
+      border: 4px solid #17202a;
+      box-shadow:
+        0 -18px 0 -4px #f1c7a5,
+        0 -18px 0 0 #17202a,
+        46px -36px 0 -8px var(--coral),
+        46px -36px 0 -4px #17202a;
+    }
+
+    .dashboard {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(520px, 1fr) 340px;
+      background: var(--paper);
+    }
+
+    .dashboard.employee-view {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard.employee-view .workspace {
+      border-right: 0;
+    }
+
+    .workspace {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      border-right: 1px solid var(--line);
+    }
+
+    .top-log {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      min-height: 74px;
+      padding: 14px 18px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .today-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .today-chip {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f7faf9;
+      padding: 8px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .today-chip .dot {
+      width: 10px;
+      height: 10px;
+      background: var(--green);
+      border: 2px solid var(--ink);
+      image-rendering: pixelated;
+    }
+
+    .top-log-title {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .office-wrap {
+      min-height: 0;
+      padding: 18px;
+      overflow: auto;
+    }
+
+    .office-stage {
+      position: relative;
+      width: min(100%, 1040px);
+      min-width: 680px;
+      aspect-ratio: 16 / 10;
+      margin: 0 auto;
+      border: 4px solid #26313d;
+      background:
+        linear-gradient(90deg, rgba(23, 32, 42, .06) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(23, 32, 42, .06) 1px, transparent 1px),
+        var(--office);
+      background-size: 32px 32px;
+      image-rendering: pixelated;
+      box-shadow: 8px 8px 0 rgba(23, 32, 42, .1);
+      overflow: hidden;
+    }
+
+    .balcony {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 64px;
+      height: 100%;
+      border-right: 4px solid rgba(54, 116, 136, .5);
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, .58) 0 49%, rgba(77, 158, 184, .22) 49% 51%, rgba(255, 255, 255, .58) 51%),
+        linear-gradient(0deg, rgba(77, 158, 184, .28) 1px, transparent 1px),
+        rgba(143, 199, 214, .28);
+      background-size: 100% 100%, 32px 32px, auto;
+      z-index: 3;
+    }
+
+    .balcony::before {
+      content: "베란다";
+      position: absolute;
+      left: 12px;
+      top: 6px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 7px;
+      border: 2px solid rgba(38, 49, 61, .78);
+      background: rgba(255, 255, 255, .92);
+      color: #26313d;
+      font-size: 11px;
+      font-weight: 900;
+      z-index: 12;
+    }
+
+    .balcony::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: rgba(54, 116, 136, .35);
+    }
+
+    .calendar {
+      position: absolute;
+      left: 96px;
+      top: 4%;
+      width: 68px;
+      height: 62px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      border: 4px solid #26313d;
+      background:
+        linear-gradient(var(--coral) 0 16px, transparent 16px),
+        linear-gradient(90deg, rgba(23, 32, 42, .12) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(23, 32, 42, .12) 1px, transparent 1px),
+        #fff;
+      background-size: auto, 16px 16px, 16px 16px, auto;
+      box-shadow: 4px 4px 0 rgba(38, 49, 61, .18);
+      z-index: 5;
+      padding: 0 0 5px;
+      color: #26313d;
+    }
+
+    .calendar::before,
+    .calendar::after {
+      content: "";
+      position: absolute;
+      top: -10px;
+      width: 10px;
+      height: 14px;
+      background: #26313d;
+    }
+
+    .calendar::before {
+      left: 12px;
+    }
+
+    .calendar::after {
+      right: 12px;
+    }
+
+    .calendar-label {
+      position: relative;
+      z-index: 1;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.05;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .notice-board {
+      position: absolute;
+      left: 40%;
+      top: 4%;
+      width: 250px;
+      min-height: 58px;
+      border: 4px solid #26313d;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, .28) 0 12px, transparent 12px),
+        #fff6cf;
+      box-shadow: 4px 4px 0 rgba(38, 49, 61, .15);
+      color: #26313d;
+      display: grid;
+      gap: 3px;
+      align-content: center;
+      padding: 8px 12px;
+      text-align: left;
+      z-index: 5;
+    }
+
+    .notice-board strong {
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .notice-board span {
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .layout-tools {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      z-index: 45;
+      display: none;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      max-width: 460px;
+      padding: 6px;
+      border: 1px solid rgba(38, 49, 61, .2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .94);
+      box-shadow: 0 8px 22px rgba(26, 36, 48, .12);
+    }
+
+    .office-stage.layout-editing .layout-tools {
+      display: flex;
+    }
+
+    .layout-tools button {
+      min-height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .layout-tools button:disabled {
+      cursor: default;
+      opacity: .46;
+    }
+
+    .desk-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .desk {
+      position: absolute;
+      width: 104px;
+      height: 58px;
+      border: 4px solid #26313d;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, .34) 0 12px, transparent 12px),
+        #d7bd82;
+      box-shadow: 4px 4px 0 rgba(38, 49, 61, .15);
+      pointer-events: auto;
+      padding: 0;
+      appearance: none;
+    }
+
+    .desk.flipped {
+      transform: scaleX(-1);
+    }
+
+    .desk::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 14px;
+      width: 25px;
+      height: 18px;
+      border: 3px solid #26313d;
+      background: #e9eef2;
+    }
+
+    .desk::after {
+      content: "";
+      position: absolute;
+      right: 14px;
+      top: 15px;
+      width: 18px;
+      height: 24px;
+      border: 3px solid #26313d;
+      background: var(--green);
+    }
+
+    .desk.vertical {
+      width: 58px;
+      height: 104px;
+      background:
+        linear-gradient(0deg, rgba(255, 255, 255, .34) 0 12px, transparent 12px),
+        #d7bd82;
+    }
+
+    .desk.vertical::before {
+      left: 14px;
+      top: 16px;
+    }
+
+    .desk.vertical::after {
+      left: 16px;
+      right: auto;
+      top: auto;
+      bottom: 14px;
+    }
+
+    .office-stage.layout-editing .desk {
+      cursor: grab;
+      outline: 3px solid rgba(23, 143, 138, .34);
+      outline-offset: 2px;
+    }
+
+    .office-stage.layout-editing .desk.selected {
+      outline-color: var(--blue);
+      box-shadow: 4px 4px 0 rgba(38, 49, 61, .15), 0 0 0 7px rgba(74, 122, 184, .18);
+    }
+
+    .office-stage.layout-editing .desk:active {
+      cursor: grabbing;
+    }
+
+    .entrance {
+      position: absolute;
+      right: -4px;
+      bottom: 15%;
+      width: 108px;
+      height: 74px;
+      border: 4px solid #26313d;
+      border-right: 0;
+      background:
+        linear-gradient(90deg, rgba(23, 143, 138, .22) 0 34%, transparent 34% 100%),
+        #fff;
+      z-index: 2;
+    }
+
+    .entrance::before {
+      content: "<";
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--teal-dark);
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .entrance::after {
+      content: "";
+      position: absolute;
+      right: -24px;
+      top: 20px;
+      width: 24px;
+      height: 28px;
+      border-top: 4px solid #26313d;
+      border-bottom: 4px solid #26313d;
+      background: rgba(23, 143, 138, .18);
+    }
+
+    .entrance-label {
+      position: absolute;
+      right: 10px;
+      top: 18px;
+      height: 25px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 9px;
+      border: 3px solid #26313d;
+      background: rgba(255, 255, 255, .86);
+      color: #26313d;
+      font-size: 12px;
+      font-weight: 900;
+      z-index: 3;
+    }
+
+    .plant {
+      position: absolute;
+      width: 26px;
+      height: 34px;
+      border: 4px solid #26313d;
+      background: #c96f54;
+      bottom: 11%;
+      left: 38px;
+      z-index: 7;
+    }
+
+    .plant::before {
+      content: "";
+      position: absolute;
+      left: -9px;
+      top: -21px;
+      width: 13px;
+      height: 21px;
+      background: var(--green);
+      box-shadow:
+        13px -8px 0 #397c51,
+        26px 0 0 var(--green);
+    }
+
+    .character {
+      --skin: #f0c4a4;
+      --shirt: var(--teal);
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 34px;
+      height: 42px;
+      transform: translate(-50%, -50%);
+      transition: left .45s steps(6), top .45s steps(6);
+      z-index: 10;
+      border: 0;
+      background: transparent;
+      padding: 0;
+    }
+
+    .character:focus {
+      outline: none;
+    }
+
+    .character:focus .body {
+      box-shadow: 0 0 0 4px rgba(23, 143, 138, .2), 4px 4px 0 rgba(38, 49, 61, .24);
+    }
+
+    .body {
+      position: absolute;
+      left: 5px;
+      top: 14px;
+      width: 24px;
+      height: 26px;
+      border: 4px solid #26313d;
+      background: var(--shirt);
+      box-shadow: 4px 4px 0 rgba(38, 49, 61, .24);
+    }
+
+    .head {
+      position: absolute;
+      left: 4px;
+      top: 0;
+      width: 26px;
+      height: 22px;
+      border: 4px solid #26313d;
+      background: var(--skin);
+    }
+
+    .head::before {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: 6px;
+      width: 4px;
+      height: 4px;
+      background: #26313d;
+      box-shadow: 10px 0 0 #26313d;
+    }
+
+    .status-badge {
+      position: absolute;
+      left: 50%;
+      top: -26px;
+      transform: translateX(-50%);
+      min-width: 44px;
+      height: 20px;
+      border: 2px solid #26313d;
+      background: #fff;
+      color: #26313d;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+      font-size: 10px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
     .command-menu {
       position: absolute;
       z-index: 30;
