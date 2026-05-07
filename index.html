@@ -1508,15 +1508,18 @@
         </section>
         <div class="admin-user-list" id="adminUserList"></div>
       </div>
-      
     </section>
   </div>
 
   <script>
     const STORAGE_KEY = "office-multiverse-state-v1";
     const MASTER_USERNAME = "허파랑";
-    const MASTER_PASSWORD = "9999";const FORCED_LOGIN_PASSWORDS = {  "이영림": "9999"};
+    const MASTER_PASSWORD = "9999";
+    const FORCED_LOGIN_PASSWORDS = {
+      "이영림": "9999"
+    };
     const REMOTE_SYNC_INTERVAL = 5000;
+    const REALTIME_WEBSOCKET_URL = "";
     const KST_TIME_ZONE = "Asia/Seoul";
     const KOREAN_HOLIDAYS = {
       "2026-01-01": "신정",
@@ -1558,6 +1561,7 @@
 
     const initialState = {
       layoutVersion: 3,
+      updatedAt: null,
       users: [],
       logs: [],
       attendance: [],
@@ -1566,6 +1570,11 @@
       sheetSync: {
         endpoint: "",
         lastSyncAt: null
+      },
+      realtimeSync: {
+        endpoint: "",
+        lastSyncAt: null,
+        lastConnectedAt: null
       },
       session: null
     };
@@ -1644,9 +1653,16 @@
     let calendarFilterUserId = "all";
     let remoteSyncTimer = null;
     let remoteSaveTimer = null;
+    let realtimeSocket = null;
+    let realtimeReconnectTimer = null;
+    let realtimeSaveTimer = null;
+    let realtimeClientId = `client-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    let realtimeReconnectAttempts = 0;
     let isApplyingRemoteState = false;
 
     applySheetEndpointFromUrl();
+    applyRealtimeEndpointFromUrl();
+    clearShareParamsFromUrl();
 
     function loadState() {
       try {
@@ -1655,6 +1671,7 @@
         const parsed = JSON.parse(raw);
         const next = {
           layoutVersion: Number(parsed.layoutVersion) || 1,
+          updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : null,
           users: sanitizeUsers(parsed.users),
           logs: Array.isArray(parsed.logs) ? parsed.logs : [],
           attendance: Array.isArray(parsed.attendance) ? parsed.attendance : [],
@@ -1663,6 +1680,7 @@
             ? parsed.noticeText.trim()
             : "오늘의 업무 현황을 확인하세요.",
           sheetSync: sanitizeSheetSync(parsed.sheetSync),
+          realtimeSync: sanitizeRealtimeSync(parsed.realtimeSync),
           session: parsed.session || null
         };
         if (next.layoutVersion < 2) {
@@ -1686,7 +1704,10 @@
       const users = Array.isArray(value) ? value : [];
       const normalized = users.map((user) => ({
         ...user,
-        role: user.role === "admin" ? "admin" : "employee"
+        role: user.role === "admin" ? "admin" : "employee",
+        passwordUpdatedAt: typeof user.passwordUpdatedAt === "string"
+          ? user.passwordUpdatedAt
+          : user.createdAt || null
       }));
 
       if (normalized.length && !normalized.some((user) => user.role === "admin")) {
@@ -1700,6 +1721,14 @@
       return {
         endpoint: typeof value.endpoint === "string" ? value.endpoint.trim() : "",
         lastSyncAt: typeof value.lastSyncAt === "string" ? value.lastSyncAt : null
+      };
+    }
+
+    function sanitizeRealtimeSync(value = {}) {
+      return {
+        endpoint: typeof value.endpoint === "string" ? value.endpoint.trim() : "",
+        lastSyncAt: typeof value.lastSyncAt === "string" ? value.lastSyncAt : null,
+        lastConnectedAt: typeof value.lastConnectedAt === "string" ? value.lastConnectedAt : null
       };
     }
 
@@ -1741,31 +1770,56 @@
       return POINTS.desk;
     }
 
-    function saveState() {
+    function saveState(options = {}) {
+      if (!isApplyingRemoteState && options.touch !== false) {
+        state.updatedAt = nextUpdatedAt();
+      }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      scheduleRemoteStateSave();
+      if (options.sync !== false) {
+        scheduleRemoteStateSave();
+        scheduleRealtimeStateSave();
+      }
+    }
+
+    function timestampValue(value) {
+      const time = Date.parse(value || "");
+      return Number.isFinite(time) ? time : 0;
+    }
+
+    function nextUpdatedAt(value = state.updatedAt) {
+      const previous = timestampValue(value);
+      return new Date(Math.max(Date.now(), previous + 1)).toISOString();
     }
 
     function publicStateSnapshot() {
       return {
         layoutVersion: state.layoutVersion,
+        updatedAt: state.updatedAt || new Date().toISOString(),
         users: state.users,
         logs: state.logs,
         attendance: state.attendance,
         deskLayout: state.deskLayout,
         noticeText: state.noticeText,
         sheetSync: sanitizeSheetSync(state.sheetSync),
-        updatedAt: new Date().toISOString()
+        realtimeSync: sanitizeRealtimeSync(state.realtimeSync)
       };
     }
 
     function applyPublicStateSnapshot(snapshot) {
       if (!snapshot || typeof snapshot !== "object") return false;
+      const localUpdatedAt = timestampValue(state.updatedAt);
+      const remoteUpdatedAt = timestampValue(snapshot.updatedAt);
+      if (localUpdatedAt && remoteUpdatedAt && remoteUpdatedAt <= localUpdatedAt) {
+        return false;
+      }
       const localSession = state.session;
       const localEndpoint = sheetEndpoint();
+      const localRealtimeEndpoint = realtimeEndpoint();
+      const localUsers = sanitizeUsers(state.users);
       isApplyingRemoteState = true;
       state = {
         layoutVersion: Number(snapshot.layoutVersion) || initialState.layoutVersion,
+        updatedAt: typeof snapshot.updatedAt === "string" ? snapshot.updatedAt : new Date().toISOString(),
         users: sanitizeUsers(snapshot.users),
         logs: Array.isArray(snapshot.logs) ? snapshot.logs : [],
         attendance: Array.isArray(snapshot.attendance) ? snapshot.attendance : [],
@@ -1774,10 +1828,15 @@
           ? snapshot.noticeText.trim()
           : "오늘의 업무 현황을 확인하세요.",
         sheetSync: sanitizeSheetSync(snapshot.sheetSync),
+        realtimeSync: sanitizeRealtimeSync(snapshot.realtimeSync),
         session: localSession
       };
+      preserveNewerLocalPasswords(localUsers);
       if (localEndpoint && !state.sheetSync.endpoint) {
         state.sheetSync.endpoint = localEndpoint;
+      }
+      if (localRealtimeEndpoint && !state.realtimeSync.endpoint) {
+        state.realtimeSync.endpoint = localRealtimeEndpoint;
       }
       if (state.session && !state.users.some((user) => user.id === state.session.userId)) {
         state.session = null;
@@ -1785,6 +1844,62 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       isApplyingRemoteState = false;
       return true;
+    }
+
+    function passwordTimestamp(user) {
+      const time = Date.parse(user?.passwordUpdatedAt || user?.createdAt || "");
+      return Number.isFinite(time) ? time : 0;
+    }
+
+    function preserveNewerLocalPasswords(localUsers) {
+      localUsers.forEach((localUser) => {
+        if (!localUser?.username || !localUser.passwordHash) return;
+        const remoteUser = state.users.find((user) => user.username === localUser.username);
+        if (!remoteUser || passwordTimestamp(localUser) <= passwordTimestamp(remoteUser)) return;
+        remoteUser.passwordHash = localUser.passwordHash;
+        remoteUser.passwordUpdatedAt = localUser.passwordUpdatedAt || new Date().toISOString();
+      });
+    }
+
+    function restoreLocalLoginPassword(localUser, hash) {
+      if (!localUser || localUser.passwordHash !== hash) return false;
+      const current = state.users.find((user) => user.username === localUser.username);
+      if (!current) return false;
+      current.passwordHash = localUser.passwordHash;
+      current.passwordUpdatedAt = new Date().toISOString();
+      saveState();
+      sendRemoteStateSnapshot();
+      return true;
+    }
+
+    async function applyForcedLoginPassword(username, password, hash) {
+      if (FORCED_LOGIN_PASSWORDS[username] !== password) return null;
+      let user = state.users.find((item) => item.username === username);
+      const now = new Date().toISOString();
+      if (!user) {
+        user = {
+          id: uid("user"),
+          username,
+          passwordHash: hash,
+          passwordUpdatedAt: now,
+          characterName: username,
+          role: "employee",
+          status: "퇴근",
+          position: POINTS.entry,
+          createdAt: now
+        };
+        state.users.push(user);
+      } else {
+        user.passwordHash = hash;
+        user.passwordUpdatedAt = now;
+        user.characterName = user.characterName || username;
+        user.role = user.role === "admin" ? "admin" : "employee";
+        user.status = user.status || "퇴근";
+        user.position = user.position || POINTS.entry;
+      }
+      saveState();
+      await sendRemoteStateSnapshot();
+      return user;
     }
 
     function scheduleRemoteStateSave() {
@@ -1879,17 +1994,54 @@
           ...sanitizeSheetSync(state.sheetSync),
           endpoint: endpoint.trim()
         };
-        saveState();
-        window.history.replaceState(null, "", `${window.location.origin}${window.location.pathname}${window.location.hash}`);
+        saveState({ touch: false, sync: false });
       } catch {
         // URL parsing is best-effort so older browsers still keep local data usable.
       }
     }
 
+    function applyRealtimeEndpointFromUrl() {
+      try {
+        const endpoint = new URLSearchParams(window.location.search).get("realtime") || "";
+        if (!endpoint.trim()) return;
+        state.realtimeSync = {
+          ...sanitizeRealtimeSync(state.realtimeSync),
+          endpoint: endpoint.trim()
+        };
+        saveState({ touch: false, sync: false });
+      } catch {
+        // URL parsing is best-effort so older browsers still keep local data usable.
+      }
+    }
+
+    function clearShareParamsFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (!params.has("sheet") && !params.has("realtime")) return;
+        params.delete("sheet");
+        params.delete("realtime");
+        const nextQuery = params.toString();
+        const nextUrl = `${window.location.origin}${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}${window.location.hash}`;
+        window.history.replaceState(null, "", nextUrl);
+      } catch {
+        // URL cleanup is cosmetic only.
+      }
+    }
+
+    function shareUrlForSync(options = {}) {
+      const base = `${window.location.origin}${window.location.pathname}`;
+      const params = new URLSearchParams();
+      const sheet = options.sheet ?? sheetEndpoint();
+      const realtime = options.realtime ?? realtimeEndpoint();
+      if (sheet) params.set("sheet", sheet);
+      if (realtime) params.set("realtime", realtime);
+      const query = params.toString();
+      return query ? `${base}?${query}` : "";
+    }
+
     function shareUrlForSheet(endpoint = sheetEndpoint()) {
       if (!endpoint) return "";
-      const base = `${window.location.origin}${window.location.pathname}`;
-      return `${base}?sheet=${encodeURIComponent(endpoint)}`;
+      return shareUrlForSync({ sheet: endpoint });
     }
 
     function setSheetStatus(message, tone = "default") {
@@ -1960,7 +2112,7 @@
           })
         });
         state.sheetSync.lastSyncAt = new Date().toISOString();
-        saveState();
+        saveState({ touch: false, sync: false });
         if (options.showStatus) {
           setSheetStatus("Google Sheets 전송 요청을 완료했습니다.");
           renderSheetControls();
@@ -2008,6 +2160,108 @@
       if (ok) {
         renderSheetControls();
         setSheetStatus(`${records.length}건의 기존 근태 전송 요청을 완료했습니다.`);
+      }
+    }
+
+    function realtimeEndpoint() {
+      return REALTIME_WEBSOCKET_URL;
+    }
+
+    function setRealtimeStatus(message, tone = "default") {
+      // Realtime is intentionally headless for employees; keep this hook for diagnostics.
+    }
+
+    function renderRealtimeControls() {
+      // No visible controls: realtime starts automatically when REALTIME_WEBSOCKET_URL is deployed.
+    }
+
+    function scheduleRealtimeStateSave() {
+      if (isApplyingRemoteState || !realtimeEndpoint()) return;
+      clearTimeout(realtimeSaveTimer);
+      realtimeSaveTimer = setTimeout(sendRealtimeStateSnapshot, 180);
+    }
+
+    function sendRealtimeStateSnapshot() {
+      if (!realtimeEndpoint()) return false;
+      if (!realtimeSocket || realtimeSocket.readyState !== WebSocket.OPEN) {
+        startRealtimeConnection();
+        return false;
+      }
+
+      try {
+        realtimeSocket.send(JSON.stringify({
+          type: "board_state",
+          sourceClientId: realtimeClientId,
+          boardState: publicStateSnapshot(),
+          sentAt: new Date().toISOString()
+        }));
+        state.realtimeSync.lastSyncAt = new Date().toISOString();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        renderRealtimeControls();
+        return true;
+      } catch {
+        setRealtimeStatus("실시간 전송에 실패했습니다. 연결을 다시 시도합니다.", "warn");
+        startRealtimeConnection({ force: true });
+        return false;
+      }
+    }
+
+    function startRealtimeConnection(options = {}) {
+      const endpoint = realtimeEndpoint();
+      if (!endpoint || !window.WebSocket) return;
+      if (!options.force && realtimeSocket && [WebSocket.CONNECTING, WebSocket.OPEN].includes(realtimeSocket.readyState)) return;
+
+      clearTimeout(realtimeReconnectTimer);
+      if (realtimeSocket) {
+        realtimeSocket.onopen = null;
+        realtimeSocket.onmessage = null;
+        realtimeSocket.onclose = null;
+        realtimeSocket.onerror = null;
+        realtimeSocket.close();
+      }
+
+      realtimeSocket = new WebSocket(endpoint);
+      realtimeSocket.onopen = () => {
+        realtimeReconnectAttempts = 0;
+        state.realtimeSync.lastConnectedAt = new Date().toISOString();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        realtimeSocket.send(JSON.stringify({
+          type: "sync_request",
+          sourceClientId: realtimeClientId,
+          sentAt: new Date().toISOString()
+        }));
+        renderRealtimeControls();
+      };
+      realtimeSocket.onmessage = (event) => {
+        handleRealtimeMessage(event.data);
+      };
+      realtimeSocket.onclose = () => {
+        renderRealtimeControls();
+        if (!realtimeEndpoint()) return;
+        realtimeReconnectAttempts += 1;
+        const delay = Math.min(30000, 1000 * (2 ** Math.min(realtimeReconnectAttempts, 5)));
+        realtimeReconnectTimer = setTimeout(() => startRealtimeConnection(), delay);
+      };
+      realtimeSocket.onerror = () => {
+        setRealtimeStatus("실시간 연결을 확인 중입니다. AWS WebSocket URL을 점검하세요.", "warn");
+      };
+    }
+
+    async function handleRealtimeMessage(raw) {
+      let payload = null;
+      try {
+        payload = JSON.parse(raw);
+      } catch {
+        return;
+      }
+
+      if (payload?.sourceClientId === realtimeClientId) return;
+      if (payload?.type !== "board_state" || !payload.boardState) return;
+
+      if (applyPublicStateSnapshot(payload.boardState)) {
+        await ensureMasterAccount({ save: false });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if (!els.dashboard.classList.contains("hidden")) renderAll();
       }
     }
 
@@ -2088,6 +2342,7 @@
           id: uid("user"),
           username: MASTER_USERNAME,
           passwordHash: masterHash,
+          passwordUpdatedAt: new Date().toISOString(),
           characterName: MASTER_USERNAME,
           role: "admin",
           status: "퇴근",
@@ -2100,6 +2355,7 @@
       master.username = MASTER_USERNAME;
       master.characterName = MASTER_USERNAME;
       master.passwordHash = masterHash;
+      master.passwordUpdatedAt = new Date().toISOString();
       master.role = "admin";
       master.status = master.status || "퇴근";
       master.position = master.position || POINTS.entry;
@@ -2223,11 +2479,13 @@
         return;
       }
 
+      const hash = await passwordHash(password);
+      const localLoginUser = state.users.find((user) => user.username === username);
+
       if (sheetEndpoint()) {
         await fetchRemoteState();
       }
       await ensureMasterAccount({ save: false });
-      const hash = await passwordHash(password);
       const existing = state.users.find((user) => user.username === username);
 
       if (authMode === "register") {
@@ -2246,6 +2504,7 @@
           id: uid("user"),
           username,
           passwordHash: hash,
+          passwordUpdatedAt: new Date().toISOString(),
           characterName: username,
           role: "admin",
           status: "출근",
@@ -2260,7 +2519,22 @@
         return;
       }
 
-      if (!existing || existing.passwordHash !== hash) { if (FORCED_LOGIN_PASSWORDS[username] === password) { const now = new Date().toISOString(); let forcedUser = existing || state.users.find((user) => user.username === username); if (!forcedUser) { forcedUser = { id: uid("user"), username, passwordHash: hash, passwordUpdatedAt: now, characterName: username, role: "employee", status: "퇴근", position: POINTS.entry, createdAt: now }; state.users.push(forcedUser); } else { forcedUser.passwordHash = hash; forcedUser.passwordUpdatedAt = now; forcedUser.characterName = forcedUser.characterName || username; forcedUser.role = forcedUser.role === "admin" ? "admin" : "employee"; forcedUser.status = forcedUser.status || "퇴근"; forcedUser.position = forcedUser.position || POINTS.entry; } state.session = { userId: forcedUser.id, loggedInAt: now }; ensureClockIn(forcedUser); saveState(); enterDashboard(); return; }
+      if (!existing || existing.passwordHash !== hash) {
+        if (existing && restoreLocalLoginPassword(localLoginUser, hash)) {
+          state.session = { userId: existing.id, loggedInAt: new Date().toISOString() };
+          ensureClockIn(existing);
+          saveState();
+          enterDashboard();
+          return;
+        }
+        const forcedUser = await applyForcedLoginPassword(username, password, hash);
+        if (forcedUser) {
+          state.session = { userId: forcedUser.id, loggedInAt: new Date().toISOString() };
+          ensureClockIn(forcedUser);
+          saveState();
+          enterDashboard();
+          return;
+        }
         els.authMessage.textContent = "아이디 또는 패스워드가 맞지 않습니다.";
         return;
       }
@@ -2296,6 +2570,7 @@
       renderSideLog();
       renderUserLabel();
       renderSheetControls();
+      renderRealtimeControls();
     }
 
     function renderAccessControls() {
@@ -2831,6 +3106,7 @@
       if (!isAdmin()) return;
       renderAdminUsers();
       renderSheetControls();
+      renderRealtimeControls();
       els.adminMessage.textContent = "";
       els.masterMessage.textContent = "";
       els.passwordResetMessage.textContent = "";
@@ -2899,6 +3175,7 @@
         id: uid("user"),
         username,
         passwordHash: await passwordHash(password),
+        passwordUpdatedAt: new Date().toISOString(),
         characterName: username,
         role,
         status: "퇴근",
@@ -2908,6 +3185,7 @@
 
       state.users.push(user);
       saveState();
+      await sendRemoteStateSnapshot();
       els.adminCreateForm.reset();
       els.adminNewRole.value = "employee";
       els.adminMessage.textContent = `${username} 계정을 생성했습니다.`;
@@ -2935,8 +3213,10 @@
       user.username = username;
       user.characterName = username;
       user.passwordHash = await passwordHash(password);
+      user.passwordUpdatedAt = new Date().toISOString();
       user.role = "admin";
       saveState();
+      await sendRemoteStateSnapshot();
       els.masterPassword.value = "";
       els.masterMessage.textContent = "마스터 계정을 변경했습니다.";
       renderAll();
@@ -2956,8 +3236,10 @@
       }
 
       user.passwordHash = await passwordHash(password);
+      user.passwordUpdatedAt = new Date().toISOString();
       els.resetPassword.value = "";
       saveState();
+      await sendRemoteStateSnapshot();
       renderAdminUsers();
       els.passwordResetMessage.textContent = `${user.username} 비밀번호를 변경했습니다.`;
     }
@@ -3218,6 +3500,7 @@
       }
       await ensureMasterAccount({ save: true });
       startRemoteStatePolling();
+      startRealtimeConnection();
       if (state.session && currentUser()) {
         enterDashboard();
       } else {
