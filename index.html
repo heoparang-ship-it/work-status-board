@@ -1809,7 +1809,7 @@
       if (!snapshot || typeof snapshot !== "object") return false;
       const localUpdatedAt = timestampValue(state.updatedAt);
       const remoteUpdatedAt = timestampValue(snapshot.updatedAt);
-      if (localUpdatedAt && remoteUpdatedAt && remoteUpdatedAt <= localUpdatedAt) {
+      if (localUpdatedAt && (!remoteUpdatedAt || remoteUpdatedAt <= localUpdatedAt)) {
         return false;
       }
       const localSession = state.session;
