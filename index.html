@@ -1810,6 +1810,12 @@
       const localUpdatedAt = timestampValue(state.updatedAt);
       const remoteUpdatedAt = timestampValue(snapshot.updatedAt);
       if (localUpdatedAt && (!remoteUpdatedAt || remoteUpdatedAt <= localUpdatedAt)) {
+        // 시계 토글 방지를 위해 스냅샷 전체는 받지 않더라도, 관리자가 새로 만든
+        // 직원 계정과 비밀번호 변경은 모든 기기에 반드시 전달되어야 한다.
+        // (그렇지 않으면 신규 직원이 자기 계정으로 로그인하지 못한다.)
+        if (mergeRemoteAccounts(snapshot.users)) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
         return false;
       }
       const localSession = state.session;
@@ -1859,6 +1865,35 @@
         remoteUser.passwordHash = localUser.passwordHash;
         remoteUser.passwordUpdatedAt = localUser.passwordUpdatedAt || new Date().toISOString();
       });
+    }
+
+    // 시계 드리프트나 로컬 state.updatedAt 이 원격보다 앞서 있어 스냅샷이 거부되는 경우에도
+    // 관리자가 새로 만든 계정과 비밀번호 변경은 항상 로컬에 반영되도록 한다.
+    // 신규 직원 로그인이 "아이디 또는 패스워드가 맞지 않습니다" 로 막히던 문제의 근본 해결.
+    function mergeRemoteAccounts(remoteUsers) {
+      const list = sanitizeUsers(remoteUsers);
+      let changed = false;
+      list.forEach((remoteUser) => {
+        if (!remoteUser?.username) return;
+        const localUser = state.users.find(
+          (user) => user.id === remoteUser.id || user.username === remoteUser.username
+        );
+        if (!localUser) {
+          state.users.push(remoteUser);
+          changed = true;
+          return;
+        }
+        if (
+          remoteUser.passwordHash &&
+          passwordTimestamp(remoteUser) > passwordTimestamp(localUser)
+        ) {
+          localUser.passwordHash = remoteUser.passwordHash;
+          localUser.passwordUpdatedAt =
+            remoteUser.passwordUpdatedAt || new Date().toISOString();
+          changed = true;
+        }
+      });
+      return changed;
     }
 
     function restoreLocalLoginPassword(localUser, hash) {
